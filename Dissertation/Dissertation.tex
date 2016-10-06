@@ -1,0 +1,162 @@
+\pdfoutput=1
+
+\documentclass{4thYearProject}
+
+\makeatletter\@openrightfalse\makeatother
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{float}
+\usepackage{longtable}
+\usepackage{listings}
+\usepackage{color}
+\usepackage{pdfpages}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{frame=tb,
+  language=SQL,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3,
+  belowskip=1em
+}
+
+\graphicspath{ {resources/images/} }
+
+\begin{document}
+\title{Microissues IntelliJ Plugin !NAME TO BE CONSIDERED!}
+\author{Alex Leet}
+\date{2016/2017}
+\maketitle
+
+\begin{abstract}
+Abstract here
+\end{abstract}
+
+\educationalconsent
+%
+%NOTE: if you include the educationalconsent (above) and your project is graded an A then
+%      it may be entered in the CS Hall of Fame
+%
+\tableofcontents
+%==============================================================================
+
+\chapter{Introduction}
+\pagenumbering{arabic}
+
+\section{Project Context}
+
+Testing citation \cite{microissues}
+
+
+\section{Motivation}
+
+
+\section{Objectives}
+
+
+\section{Achievements}
+
+
+\section{Dissertation Structure}
+
+Go over the structure of the dissertation.
+
+\begin{table}[H]
+\caption{Dissertation Structure}
+\centering
+\def\arraystretch{1.5}
+\begin{tabular}{p{3cm}p{12cm}}
+\hline
+Chapter & Content \\
+\hline
+2. Background & A short description of the previous work related to the project. \\
+3. Requirements & Discusses the gathering of the requirements, followed by a list of all requirements. \\
+4. Design and Implementation & Describes the architecture of the plugin. Details the design decisions taken. Also contains a list of final design features.\\
+5. Evaluation & Describes the test process and the user evaluation carried out, their results and a discussion of the results. \\
+6. Conclusion: & Discusses the outcome of the project, future work possibilities and learning outcomes.  \\
+\hline
+\end{tabular}
+\label{table:reportStructure}
+\end{table}
+
+
+\chapter{Background}
+
+Text on what this chapter talks about
+
+\section{Issue Tracking}
+
+A short section on issue-tracking systems and what they are.
+
+\section{Related Work}
+
+Related plugins that have been created.
+
+\section{Research on Issue Tracking and Usage of Issue-tracking Systems}
+
+\chapter{Requirements}
+
+\section{Requirements Elicitation and Gathering}
+
+
+\section{Functional Requirements}
+
+\newpage
+\section{Non-Functional Requirements}
+
+\chapter{Design and Implementation}
+
+Discuss design choices, justifications and implementation.
+
+\section{Iterations Overview}
+
+Overview of the development iterations.
+
+\section{User Interface}
+
+\chapter{Evaluation}
+
+Describe the aims of this chapter
+
+\section{Unit Testing}
+\section{Acceptance Testing}
+
+
+\chapter{Conclusion}
+
+\section{Project Outcome}
+
+Outline the project outcome. 
+
+\section{Learning Outcomes}
+
+
+%%%%%%%%%%%%%%%%%%%%
+%   BIBLIOGRAPHY   %
+%%%%%%%%%%%%%%%%%%%%
+\bibliographystyle{ieeetr}
+\bibliography{resources/bibliography}
+
+%%%%%%%%%%%%%%%%
+%              %
+%  APPENDICES  %
+%              %
+%%%%%%%%%%%%%%%%
+
+\begin{appendices}
+\end{appendices}
+
+\end{document}
