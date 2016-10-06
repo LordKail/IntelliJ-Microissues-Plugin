@@ -1,5 +1,5 @@
 % =============================================================================
-% l4proj.cls
+% 4thYearProject.cls
 %
 % Template for final year projects in the School of Computing Science at the
 % University of Glasgow. Adapted from the level 3 project template originally
@@ -7,7 +7,7 @@
 %
 % =============================================================================
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{l4proj}[%
+\ProvidesClass{4thYearProject}[%
 2009/01/09 Colin Perkins <csp@dcs.gla.ac.uk>.%
 2009/09/16 Modified by Tim Storer <tws@dcs.gla.ac.uk> to support non pdf modes.%
 2011/02/15 Modified by Gregg Hamilton <hamiltgr@dcs.gla.ac.uk> for use in final year projects.%
