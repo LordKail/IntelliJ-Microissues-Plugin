@@ -1,10 +1,11 @@
 sudo: required
+language: java
 dist: trusty
 before_install:
 - sudo apt-get -qq update && sudo apt-get install -y --no-install-recommends texlive-fonts-recommended texlive-latex-extra texlive-fonts-extra dvipng texlive-latex-recommended
 script:
 - cd Dissertation
 - pdflatex -interaction=nonstopmode Dissertation.tex
-- bibtex Dissertation.tex
+- bibtex Dissertation
 - pdflatex -interaction=nonstopmode Dissertation.tex
 - pdflatex -interaction=nonstopmode -halt-on-error Dissertation.tex
