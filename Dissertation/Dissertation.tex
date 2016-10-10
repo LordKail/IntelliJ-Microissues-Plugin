@@ -47,7 +47,7 @@ Abstract here
 
 \educationalconsent
 %
-%NOTE: if you include the educationalconsent (above) and your project is graded an A then
+%	NOTE: if you include the educationalconsent (above) and your project is graded an A then
 %      it may be entered in the CS Hall of Fame
 %
 \tableofcontents
@@ -103,9 +103,47 @@ A short section on issue-tracking systems and what they are.
 
 \section{Related Work}
 
-Related plugins that have been created.
+Various plugins have been developed to ease the integration of development environments with issue management. However, as the below mentioned examples will demonstrate, most are intended to connect to the various issue management systems. 
+
+\subsection{Inbuilt IntelliJ Task Management Plugin}
+
+IntelliJ IDEA is bundled with its own task management plugin and is activated by default. It allows for integration to various issue tracking systems, which allows the user to open, create and delete tasks or issues. Therefore a server that the tasks and issues are hosted on is necessary to use the inbuilt feature, which means there is no capability to create tickets locally. Additionally, tickets cannot be linked to source code in any way.
+
+\begin{figure}[H]
+\includegraphics[scale=0.5]{IntelliJ_Tasks}
+\centering
+\caption{Example of viewing a YouTrack task in IntelliJ}\label{intellijtask}
+\label{fig:intellijtask}
+\end{figure}
+
+\subsection{Tasks Navigation Plugin}
+
+An attempt to connect source code to issue management systems in order to reduce context switch was attempted by Vladislav Rassokhin, who developed the plugin "Tasks Navigation" that allows the user to link to tasks (issues) in the Web from comments and reference injections in IntelliJ \cite{tasksnavigation}. With the plugin it is easy to quickly get information about the issue and to see which 
+
+\begin{figure}[H]
+\includegraphics[scale=0.6]{Tasks_Navigation_Plugin}
+\centering
+\caption{Example of how the Tasks Navigation plugin works}\label{tasksnavigation}
+\label{fig:tasksnavigation}
+\end{figure}
+
+\subsection{Tasks Plugin}
+
+Another IntelliJ plugin that was developed by Sergiy Dubovik and continued by Warner Jan Veldhuis is Tasks, which allows the user to locally manage tasks and issues. The plugin includes the ability to assign priority to tasks and keep track for how long they have been worked on. However, there is no possibility to connect the tasks to source code. 
+
+\begin{figure}[H]
+\includegraphics[scale=0.6]{Tasks}
+\centering
+\caption{Example of task management in the Tasks plugin}\label{tasks}
+\label{fig:tasks}
+\end{figure}
+
 
 \section{Research on Issue Tracking and Usage of Issue-tracking Systems}
+
+Attemps have been made to research recording of issues and bugs and the common shortcomings of how bugs and issues are documented. A study by Jorge Aranda and Gina Venolia has found that one of the most crucial bits of information missing in issue management is links to source code and the change-sets that resolved these bugs \cite{lifeofbugs}. Additionally, they had found that in some cases, the key events in the story of a bug had left no electronic trace and therefore there was no way to discover the important information pertaining the fixing of a bug.
+
+\section{Evaluation of Related Work and Related Research}
 
 \chapter{Requirements}
 
@@ -147,6 +185,7 @@ Outline the project outcome.
 %%%%%%%%%%%%%%%%%%%%
 %   BIBLIOGRAPHY   %
 %%%%%%%%%%%%%%%%%%%%
+
 \bibliographystyle{ieeetr}
 \bibliography{resources/bibliography}
 
