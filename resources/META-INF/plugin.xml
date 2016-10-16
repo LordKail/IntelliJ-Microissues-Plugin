@@ -28,8 +28,22 @@
     <!-- Add your extensions here -->
   </extensions>
 
+  <project-components>
+    <component>
+      <implementation-class>SetupToolWindow</implementation-class>
+    </component>
+  </project-components>
+
   <actions>
     <!-- Add your actions here -->
+
+    <group id="TasksActionGroup" class="com.intellij.openapi.actionSystem.DefaultActionGroup">
+
+    </group>
+
+    <group id="TasksAdditionalToolBarGroup">
+
+    </group>
   </actions>
 
 </idea-plugin>
