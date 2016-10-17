@@ -4,6 +4,8 @@
 
 \makeatletter\@openrightfalse\makeatother
 \usepackage{graphicx}
+\usepackage{tabularx}
+\usepackage{diagbox}
 \usepackage{hyperref}
 \usepackage{float}
 \usepackage{longtable}
@@ -14,6 +16,8 @@
 \definecolor{dkgreen}{rgb}{0,0.6,0}
 \definecolor{gray}{rgb}{0.5,0.5,0.5}
 \definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\newcolumntype{Y}{>{\raggedleft\arraybackslash}X}
 
 \lstset{frame=tb,
   language=SQL,
@@ -140,7 +144,34 @@ Another IntelliJ plugin that was developed by Sergiy Dubovik and continued by Wa
 
 \subsection{Mylyn}
 
-Mylyn is the task and application lifecycle management (ALM) framework for Eclipse.
+Mylyn is the task and application lifecycle management (ALM) framework for Eclipse. 
+
+\subsection{Eclipse TODO Editor Plugin}
+
+The Eclipse todo editor plugin that allows to edit todo files in Eclipse. 
+
+\begin{figure}[H]
+\includegraphics[scale=0.6]{eclipse_TODO_editor}
+\centering
+\caption{Example of the editor window, including the visual display of todo's on the left}\label{eclipsetodo}
+\label{fig:eclipsetodo}
+\end{figure}
+
+\subsection{Summary of Related Work}
+
+\begin{center}
+
+\noindent
+\begin{tabular}{|l||*{5}{c|}}\hline
+\backslashbox[50mm]{Feature}{Plugin}
+&\makebox{IntelliJ Inbuilt Plugin}&\makebox{Tasks Navigation}&\makebox{Tasks}
+&\makebox{Mylyn}&\makebox{Eclipse TODO Editor}\\\hline
+Integration with source code & Yes &&&&\\\hline
+Local issue management & No &&&&\\\hline
+Display of all issues & Yes &&&&\\\hline 
+\end{tabular}
+
+\end{center}
 
 \section{Research on Issue Tracking and Usage of Issue-tracking Systems}
 
