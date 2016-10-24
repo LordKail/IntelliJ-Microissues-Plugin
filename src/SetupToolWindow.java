@@ -30,6 +30,12 @@ public class SetupToolWindow implements ProjectComponent{
         @desc = An example of a ticket, showing the relevant information and the description of it, i.e what has to be
         done.
      */
+    /*
+        <Ticket>
+        <Name>
+        <Author>
+        </Ticket>
+    */
 
     @Override
     public void initComponent() {
