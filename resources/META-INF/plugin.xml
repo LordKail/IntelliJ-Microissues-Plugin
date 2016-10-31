@@ -37,8 +37,17 @@
   <actions>
     <!-- Add your actions here -->
 
-    <group id="TasksActionGroup" class="com.intellij.openapi.actionSystem.DefaultActionGroup">
+    <group id="MyPlugin.SampleMenu" text="_Sample Menu" description="Sample menu">
+      <add-to-group group-id="MainMenu" anchor="last"  />
+      <action id="Myplugin.Textboxes" class="FindPsiComments" text="Text _Boxes" description="A test menu item" />
+    </group>
 
+    <action id="RefreshIssues" class="FindPsiComments" text="Add Task..." description="Add new task" icon="/add_task.png">
+      <!--<keyboard-shortcut first-keystroke="INSERT" keymap="$default"/>-->
+    </action>
+
+    <group id="TasksActionGroup" class="com.intellij.openapi.actionSystem.DefaultActionGroup">
+      <reference ref="RefreshIssues" />
     </group>
 
     <group id="TasksAdditionalToolBarGroup">

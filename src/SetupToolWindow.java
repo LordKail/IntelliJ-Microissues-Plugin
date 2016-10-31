@@ -1,10 +1,14 @@
 import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.components.ProjectComponent;
+import com.intellij.openapi.editor.Document;
+import com.intellij.openapi.fileEditor.FileDocumentManager;
+import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManager;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowAnchor;
 import com.intellij.openapi.wm.ToolWindowManager;
+import com.intellij.psi.*;
 import com.intellij.ui.content.ContentFactory;
 import org.jetbrains.annotations.NotNull;
 
@@ -48,8 +52,6 @@ public class SetupToolWindow implements ProjectComponent{
         microissuesContainer = new JPanel(new BorderLayout(1, 1));
         microissuesContainer.setBorder(null);
 
-        ToolWindow tasksToolWindow = ToolWindowManager.getInstance(project).registerToolWindow(toolwindowTitle, false, ToolWindowAnchor.BOTTOM);
-        tasksToolWindow.getContentManager().addContent(ContentFactory.SERVICE.getInstance().createContent(microissuesContainer, "Microissues", true));
 
         ActionGroup actionGroup = (ActionGroup) ActionManager.getInstance().getAction("TasksActionGroup");
         ActionToolbar toolBar = ActionManager.getInstance().createActionToolbar("TasksActionGroupPlace", actionGroup, false);
@@ -57,10 +59,15 @@ public class SetupToolWindow implements ProjectComponent{
         ActionGroup additionalActionGroup = (ActionGroup) ActionManager.getInstance().getAction("TasksAdditionalToolBarGroup");
         ActionToolbar additionalToolbar = ActionManager.getInstance().createActionToolbar("TasksActionGroupPlace", additionalActionGroup, false);
 
+
         JPanel toolBarPanel = new JPanel(new BorderLayout(1, 1));
         toolBarPanel.add(toolBar.getComponent(), BorderLayout.WEST);
         toolBarPanel.add(additionalToolbar.getComponent(), BorderLayout.CENTER);
         toolBarPanel.setBorder(null);
+        microissuesContainer.add(toolBarPanel);
+
+        ToolWindow tasksToolWindow = ToolWindowManager.getInstance(project).registerToolWindow(toolwindowTitle, false, ToolWindowAnchor.BOTTOM);
+        tasksToolWindow.getContentManager().addContent(ContentFactory.SERVICE.getInstance().createContent(microissuesContainer, "Microissues", true));
     }
 
     @Override
