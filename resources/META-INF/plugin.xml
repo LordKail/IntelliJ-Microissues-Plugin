@@ -30,7 +30,7 @@
 
   <project-components>
     <component>
-      <implementation-class>SetupToolWindow</implementation-class>
+      <implementation-class>uk.ac.glasgow.microissues.ui.SetupToolWindow</implementation-class>
     </component>
   </project-components>
 
@@ -39,10 +39,10 @@
 
     <group id="MyPlugin.SampleMenu" text="_Sample Menu" description="Sample menu">
       <add-to-group group-id="MainMenu" anchor="last"  />
-      <action id="Myplugin.Textboxes" class="FindPsiComments" text="Text _Boxes" description="A test menu item" />
+      <action id="Myplugin.Textboxes" class="uk.ac.glasgow.microissues.plugin.FindPsiComments" text="Text _Boxes" description="A test menu item" />
     </group>
 
-    <action id="RefreshIssues" class="FindPsiComments" text="Add Task..." description="Add new task" icon="/add_task.png">
+    <action id="RefreshIssues" class="uk.ac.glasgow.microissues.plugin.FindPsiComments" text="Add Task..." description="Add new task" icon="/add_task.png">
       <!--<keyboard-shortcut first-keystroke="INSERT" keymap="$default"/>-->
     </action>
 

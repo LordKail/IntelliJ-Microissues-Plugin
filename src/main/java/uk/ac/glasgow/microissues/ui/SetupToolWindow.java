@@ -1,3 +1,5 @@
+package uk.ac.glasgow.microissues.ui;
+
 import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.components.ProjectComponent;
 import com.intellij.openapi.editor.Document;
@@ -26,14 +28,13 @@ public class SetupToolWindow implements ProjectComponent{
         this.project = project;
     }
 
-    /*
-        @title = Sample ticket
+    /*  @micro Sample ticket
         @author = Alex
         @prio = 8
         @mile = 31/10/2015
-        @desc = An example of a ticket, showing the relevant information and the description of it, i.e what has to be
-        done.
+
      */
+
     /*
         <Ticket>
         <Name>
