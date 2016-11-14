@@ -2,23 +2,18 @@ package uk.ac.glasgow.microissues.plugin;
 
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.actionSystem.LangDataKeys;
-import com.intellij.openapi.actionSystem.PlatformDataKeys;
-import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.fileEditor.FileEditorManager;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.project.ProjectManager;
 import com.intellij.openapi.roots.ContentIterator;
 import com.intellij.openapi.roots.ProjectFileIndex;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.psi.*;
-import com.intellij.ui.content.ContentFactory;
 
-import javax.swing.*;
-import java.awt.*;
+import com.intellij.ui.components.JBScrollPane;
+import com.intellij.ui.treeStructure.Tree;
+import uk.ac.glasgow.microissues.ui.CreateTaskTree;
+
+import javax.swing.tree.DefaultMutableTreeNode;
 import java.util.ArrayList;
 
 /**
@@ -26,8 +21,9 @@ import java.util.ArrayList;
  */
 public class FindPsiComments extends AnAction {
 
-    private ArrayList<VirtualFile> vFiles = new ArrayList<VirtualFile>();
-    private ArrayList<PsiComment> psiCommentList = new ArrayList<PsiComment>();
+    private ArrayList<VirtualFile> vFiles = new ArrayList<>();
+    private ArrayList<PsiComment> psiCommentList = new ArrayList<>();
+    private ArrayList<Ticket> ticketList = new ArrayList<>();
 
     public FindPsiComments() {
         // Set the menu item name.
@@ -43,7 +39,6 @@ public class FindPsiComments extends AnAction {
                 isPsiComment(psiChild);
             }
         }
-
     }
 
     @Override
@@ -67,15 +62,23 @@ public class FindPsiComments extends AnAction {
         }
 
         System.out.println("PsiCommentList size after loop: " + psiCommentList.size());
-        for(PsiComment comment : psiCommentList){
-            System.out.println(comment.getText());
 
-            ToolWindow window = ToolWindowManager.getInstance(e.getProject()).getToolWindow("Microissues");
-            JLabel labelText = new JLabel(comment.getText());
-            JComponent check = (JComponent) window.getComponent().add(labelText);
-            check.repaint();
-            window.getContentManager().addContent(ContentFactory.SERVICE.getInstance().createContent(
-                    check, "Comment", true));;
+        for(PsiComment comment : psiCommentList){
+            TicketBuilder buildingIssue = new TicketBuilder();
+            Ticket addingTicket = buildingIssue.buildIssue(comment);
+            if(addingTicket != null) {
+                System.out.println("CONSTRUCTED ISSUE CLASS, Summary: " + addingTicket.getSummary());
+                ticketList.add(addingTicket);
+            }
         }
+
+        CreateTaskTree taskTree = new CreateTaskTree(ticketList);
+        ToolWindow window = ToolWindowManager.getInstance(e.getProject()).getToolWindow("Microissues");
+        taskTree.buildTree(window);
+    }
+
+    private void createNodes(DefaultMutableTreeNode top) {
+        DefaultMutableTreeNode summary = null;
+
     }
 }
