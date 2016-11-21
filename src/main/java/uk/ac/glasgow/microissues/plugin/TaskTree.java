@@ -101,6 +101,12 @@ public class TaskTree {
                 System.out.println("MOUSE CLICKED");
                 if (SwingUtilities.isRightMouseButton(e)) {
                     System.out.println("RIGHT MOUSE CLICKED");
+                    DefaultMutableTreeNode selectedElement
+                            =(DefaultMutableTreeNode)taskTree.getSelectionPath().getLastPathComponent();
+                    JPopupMenu popup = new JPopupMenu();
+                    popup.add(new JMenuItem("Sample popup"));
+                    popup.show(taskTree, e.getX(), e.getY());
+
                 }else{
                     DefaultMutableTreeNode selectedElement
                             =(DefaultMutableTreeNode)taskTree.getSelectionPath().getLastPathComponent();
@@ -127,6 +133,7 @@ public class TaskTree {
         };
 
         taskTree.addMouseListener(ml);
+        taskTree.setToggleClickCount(0);
 
         microissuesContainer.add(new JBScrollPane(taskTree), BorderLayout.CENTER);
         window.getContentManager().addContent(ContentFactory.SERVICE.getInstance().createContent(microissuesContainer, "All issues", true));
