@@ -12,9 +12,12 @@ import com.intellij.openapi.wm.ToolWindowAnchor;
 import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.psi.*;
 import com.intellij.ui.content.ContentFactory;
+import com.intellij.ui.treeStructure.Tree;
 import org.jetbrains.annotations.NotNull;
+import uk.ac.glasgow.microissues.plugin.TaskTree;
 
 import javax.swing.*;
+import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.*;
 
 
@@ -28,53 +31,29 @@ public class SetupToolWindow implements ProjectComponent{
         this.project = project;
     }
 
-    /*  @micro Sample ticket
-        @author = Alex
-        @prio = 8
-        @mile = 31/10/2015
-
-     */
-
-    /*
-        <Ticket>
-        <Name>
-        <Author>
-        </Ticket>
-    */
-
     @Override
     public void initComponent() {
-        //Initialising the component. Might move the methods from "projectOpened" to here.
+        microissuesContainer = new JPanel(new BorderLayout(1, 1));
+        microissuesContainer.setBorder(null);
     }
 
     @Override
     public void projectOpened() {
-
-        microissuesContainer = new JPanel(new BorderLayout(1, 1));
-        microissuesContainer.setBorder(null);
-
-
-        ActionGroup actionGroup = (ActionGroup) ActionManager.getInstance().getAction("TasksActionGroup");
-        ActionToolbar toolBar = ActionManager.getInstance().createActionToolbar("TasksActionGroupPlace", actionGroup, false);
-
-        ActionGroup additionalActionGroup = (ActionGroup) ActionManager.getInstance().getAction("TasksAdditionalToolBarGroup");
-        ActionToolbar additionalToolbar = ActionManager.getInstance().createActionToolbar("TasksActionGroupPlace", additionalActionGroup, false);
-
-
-        JPanel toolBarPanel = new JPanel(new BorderLayout(1, 1));
-        toolBarPanel.add(toolBar.getComponent(), BorderLayout.WEST);
-        toolBarPanel.add(additionalToolbar.getComponent(), BorderLayout.CENTER);
-        toolBarPanel.setBorder(null);
-        microissuesContainer.add(toolBarPanel);
-
         ToolWindow tasksToolWindow = ToolWindowManager.getInstance(project).registerToolWindow(toolwindowTitle, false, ToolWindowAnchor.BOTTOM);
-        tasksToolWindow.getContentManager().addContent(ContentFactory.SERVICE.getInstance().createContent(microissuesContainer, "Microissues", true));
+        //tasksToolWindow.getContentManager().addContent(ContentFactory.SERVICE.getInstance().createContent(microissuesContainer, "All issues", true));
+        Tree randomTree;
+        DefaultMutableTreeNode top =
+                new DefaultMutableTreeNode("All issues");
+        randomTree = new Tree(top);
+        TaskTree taskTree = new TaskTree(project);
+        taskTree.processComments();
+        //tasksToolWindow.getContentManager().getComponent().add(randomTree, BorderLayout.CENTER);
     }
 
     @Override
     public void projectClosed() {
-        ToolWindowManager toolWindowManager = ToolWindowManager.getInstance(project);
-        toolWindowManager.unregisterToolWindow(toolwindowTitle);
+        //ToolWindowManager toolWindowManager = ToolWindowManager.getInstance(project);
+        //toolWindowManager.unregisterToolWindow(toolwindowTitle);
     }
 
     @Override
