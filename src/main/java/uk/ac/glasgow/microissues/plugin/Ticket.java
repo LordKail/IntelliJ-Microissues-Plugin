@@ -50,4 +50,8 @@ public class Ticket {
         return summary;
     }
     public String getType() { return type; }
+
+    public String toString(){
+        return summary;
+    }
 }

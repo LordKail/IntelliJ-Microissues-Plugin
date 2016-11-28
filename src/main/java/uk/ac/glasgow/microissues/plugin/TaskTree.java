@@ -9,6 +9,7 @@ import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.psi.*;
 
 import com.intellij.ui.components.JBScrollPane;
+import com.intellij.ui.components.panels.FlowLayoutWrapper;
 import com.intellij.ui.content.ContentFactory;
 import com.intellij.ui.treeStructure.Tree;
 import org.jetbrains.annotations.NotNull;
@@ -104,14 +105,32 @@ public class TaskTree {
                     DefaultMutableTreeNode selectedElement
                             =(DefaultMutableTreeNode)taskTree.getSelectionPath().getLastPathComponent();
                     JPopupMenu popup = new JPopupMenu();
-                    popup.add(new JMenuItem("Sample popup"));
+                    JMenuItem viewInfo= new JMenuItem("View info");
+                    viewInfo.addActionListener(new TreeRClickMenuListener(window));
+                    popup.add(viewInfo);
                     popup.show(taskTree, e.getX(), e.getY());
 
                 }else{
                     DefaultMutableTreeNode selectedElement
                             =(DefaultMutableTreeNode)taskTree.getSelectionPath().getLastPathComponent();
                     System.out.println(selectedElement.getUserObject());
-                    // Ridiculous nested if/loop
+                    if(e.getClickCount() == 1){
+                        // Retrieving the info window.
+                        JPanel interWindow1 = (JPanel) window.getContentManager().getComponent().getComponents()[0];
+                        JPanel interWindow2 = (JPanel) interWindow1.getComponents()[0];
+                        JPanel interWindow3 = (JPanel) interWindow2.getComponents()[0];
+                        System.out.println(try3.getComponents().length);
+                        System.out.println(try3.getComponent(1).getClass());
+                        JBScrollPane scrollPane = (JBScrollPane) interWindow3.getComponent(1);
+                        JViewport viewport = (JViewport) scrollPane.getViewport();
+                        JPanel panel = (JPanel) viewport.getView();
+                        JLabel label = (JLabel) panel.getComponent(0);
+                        Ticket selected = (Ticket) selectedElement.getUserObject();
+                        label.setText("<html><h3> Ticket Information </h1>" +
+                                "<p>Summary: " + selected.getSummary() + "</p>" +
+                                "<p>Type: " + selected.getType() + "</p></html>");
+                    }
+                    // Ridiculous nested if statement block
                     if(e.getClickCount() == 2){
                         System.out.println("Double click!");
                         if(ticketToNode.containsValue(selectedElement)){
@@ -135,16 +154,27 @@ public class TaskTree {
         taskTree.addMouseListener(ml);
         taskTree.setToggleClickCount(0);
 
-        microissuesContainer.add(new JBScrollPane(taskTree), BorderLayout.CENTER);
+        microissuesContainer.add(new JBScrollPane(taskTree), BorderLayout.WEST);
+
+        // Adding an information window for the ticket
+        JLabel ticketInfoTab = new JLabel("Ticket information will appear here");
+        ticketInfoTab.setOpaque(true);
+        ticketInfoTab.setBackground(Color.WHITE);
+        JPanel newJPanel = new JPanel();
+        FlowLayout layout = (FlowLayout) newJPanel.getLayout();
+        layout.setVgap(0);
+        layout.setAlignment(FlowLayout.LEFT);
+        newJPanel.setBackground(Color.WHITE);
+        newJPanel.add(ticketInfoTab, BorderLayout.WEST);
+        microissuesContainer.add(new JBScrollPane(newJPanel));
+
         window.getContentManager().addContent(ContentFactory.SERVICE.getInstance().createContent(microissuesContainer, "All issues", true));
     }
 
     public void createNodes(DefaultMutableTreeNode top){
         for(Ticket ticket : ticketList){
-            DefaultMutableTreeNode ticketNode = new DefaultMutableTreeNode(ticket.getSummary());
+            DefaultMutableTreeNode ticketNode = new DefaultMutableTreeNode(ticket);
             ticketToNode.put(ticket, ticketNode);
-            DefaultMutableTreeNode typeNode = new DefaultMutableTreeNode(ticket.getType());
-            ticketNode.add(typeNode);
             top.add(ticketNode);
         }
     }
@@ -207,7 +237,7 @@ public class TaskTree {
                         Ticket changeTicket = commentToTicket.get(oldChild);
                         Ticket newTicket = changeTicket.buildIssue(newChild);
                         commentToTicket.put(newChild, commentToTicket.get(oldChild));
-                        ticketToNode.get(commentToTicket.get(oldChild)).setUserObject(newTicket.getSummary());
+                        ticketToNode.get(commentToTicket.get(oldChild)).setUserObject(newTicket);
                         DefaultTreeModel defaultModel = (DefaultTreeModel) taskTree.getModel();
                         defaultModel.nodeChanged(ticketToNode.get(commentToTicket.get(oldChild)));
                         commentToTicket.remove(oldChild);
