@@ -12,6 +12,6 @@ public class TicketHistoryTest {
 
     /*
     @tckt Ticket summary
-    @type TASK
+    @type BUG
      */
 }
