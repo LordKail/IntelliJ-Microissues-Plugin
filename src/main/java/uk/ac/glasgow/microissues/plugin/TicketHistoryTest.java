@@ -11,7 +11,7 @@ import java.util.HashMap;
 public class TicketHistoryTest {
 
     /*
-    @tckt Ticket summary
+    @tckt Ticket summary CHANGED. Description has been edited too.
     @type BUG
      */
 }
