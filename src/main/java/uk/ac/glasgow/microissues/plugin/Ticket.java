@@ -1,6 +1,7 @@
 package uk.ac.glasgow.microissues.plugin;
 
 import com.intellij.psi.PsiComment;
+import com.intellij.psi.PsiFile;
 
 import java.util.HashMap;
 import java.util.regex.Matcher;
@@ -15,6 +16,7 @@ public class Ticket {
     private String description;
     private String type;
     private PsiComment associatedComment;
+    private String associatedFile;
     private static final Pattern TAG_REGEX = Pattern.compile("@(.+?)\\s(.+?)\\n");
 
     public Ticket(){
@@ -26,10 +28,12 @@ public class Ticket {
         this.description = description;
         this.type = type;
         this.associatedComment = associatedComment;
+
     }
 
     public Ticket buildIssue(PsiComment comment) {
         this.associatedComment = comment;
+
         String commentString = comment.getText();
         HashMap<String, String> tagMap = new HashMap<>();
         final Matcher matcher = TAG_REGEX.matcher(commentString);
@@ -37,8 +41,11 @@ public class Ticket {
         while (matcher.find()) {
             tagMap.put(matcher.group(1), matcher.group(2));
         }
-
         if (tagMap.containsKey("tckt")) {
+            System.out.println(comment.getParent().getParent().getText());
+            PsiFile psifile = (PsiFile) comment.getParent().getParent();
+            this.associatedFile = psifile.getName();
+
             this.summary = tagMap.get("tckt");
             this.type = tagMap.get("type");
             return this;
@@ -50,6 +57,8 @@ public class Ticket {
         return summary;
     }
     public String getType() { return type; }
+    public String getAssociatedFile(){ return associatedFile; }
+    public PsiComment getAssociatedComment() { return associatedComment; }
 
     public String toString(){
         return summary;

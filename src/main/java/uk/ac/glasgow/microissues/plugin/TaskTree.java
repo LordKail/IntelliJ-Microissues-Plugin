@@ -105,8 +105,8 @@ public class TaskTree {
                     DefaultMutableTreeNode selectedElement
                             =(DefaultMutableTreeNode)taskTree.getSelectionPath().getLastPathComponent();
                     JPopupMenu popup = new JPopupMenu();
-                    JMenuItem viewInfo= new JMenuItem("View info");
-                    viewInfo.addActionListener(new TreeRClickMenuListener(window));
+                    JMenuItem viewInfo= new JMenuItem("View ticket history");
+                    viewInfo.addActionListener(new TreeRClickMenuListener(window, selectedElement));
                     popup.add(viewInfo);
                     popup.show(taskTree, e.getX(), e.getY());
 
@@ -119,8 +119,6 @@ public class TaskTree {
                         JPanel interWindow1 = (JPanel) window.getContentManager().getComponent().getComponents()[0];
                         JPanel interWindow2 = (JPanel) interWindow1.getComponents()[0];
                         JPanel interWindow3 = (JPanel) interWindow2.getComponents()[0];
-                        System.out.println(try3.getComponents().length);
-                        System.out.println(try3.getComponent(1).getClass());
                         JBScrollPane scrollPane = (JBScrollPane) interWindow3.getComponent(1);
                         JViewport viewport = (JViewport) scrollPane.getViewport();
                         JPanel panel = (JPanel) viewport.getView();
