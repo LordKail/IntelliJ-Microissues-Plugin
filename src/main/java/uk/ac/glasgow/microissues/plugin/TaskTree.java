@@ -26,7 +26,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
- *
+ * The class that is responsible for processing the Psi elements and thus creating the appropriate JTree and Ticket
+ * class instances that will store the information for each comment.
  */
 public class TaskTree {
 
@@ -87,8 +88,8 @@ public class TaskTree {
     }
 
     public void buildTree(ToolWindow window) {
-        microissuesContainer = new JPanel(new BorderLayout(1, 1));
-        microissuesContainer.setBorder(null);
+        //microissuesContainer = new JPanel(new BorderLayout(1, 1));
+        //microissuesContainer.setBorder(null);
         DefaultMutableTreeNode top =
                 new DefaultMutableTreeNode("All issues");
         createNodes(top);
@@ -96,6 +97,8 @@ public class TaskTree {
         taskTree.setVisible(true);
 
         System.out.println("TESTING WINDOW TITLE: " + window.getTitle());
+
+        JLabel ticketInfoTab = new JLabel("Ticket information will appear here");
 
         MouseListener ml = new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
@@ -115,6 +118,7 @@ public class TaskTree {
                             =(DefaultMutableTreeNode)taskTree.getSelectionPath().getLastPathComponent();
                     System.out.println(selectedElement.getUserObject());
                     if(e.getClickCount() == 1){
+                        /*
                         // Retrieving the info window.
                         JPanel interWindow1 = (JPanel) window.getContentManager().getComponent().getComponents()[0];
                         JPanel interWindow2 = (JPanel) interWindow1.getComponents()[0];
@@ -127,6 +131,12 @@ public class TaskTree {
                         label.setText("<html><h3> Ticket Information </h1>" +
                                 "<p>Summary: " + selected.getSummary() + "</p>" +
                                 "<p>Type: " + selected.getType() + "</p></html>");
+                    */
+
+                        Ticket selected = (Ticket) selectedElement.getUserObject();
+                        ticketInfoTab.setText("<html><h3> Ticket Information </h1>" +
+                            "<p>Summary: " + selected.getSummary() + "</p>" +
+                            "<p>Type: " + selected.getType() + "</p></html>");
                     }
                     // Ridiculous nested if statement block
                     if(e.getClickCount() == 2){
@@ -152,10 +162,9 @@ public class TaskTree {
         taskTree.addMouseListener(ml);
         taskTree.setToggleClickCount(0);
 
-        microissuesContainer.add(new JBScrollPane(taskTree), BorderLayout.WEST);
+        //microissuesContainer.add(new JBScrollPane(taskTree), BorderLayout.WEST);
 
         // Adding an information window for the ticket
-        JLabel ticketInfoTab = new JLabel("Ticket information will appear here");
         ticketInfoTab.setOpaque(true);
         ticketInfoTab.setBackground(Color.WHITE);
         JPanel newJPanel = new JPanel();
@@ -164,7 +173,11 @@ public class TaskTree {
         layout.setAlignment(FlowLayout.LEFT);
         newJPanel.setBackground(Color.WHITE);
         newJPanel.add(ticketInfoTab, BorderLayout.WEST);
-        microissuesContainer.add(new JBScrollPane(newJPanel));
+        //microissuesContainer.add(new JBScrollPane(newJPanel));
+
+        microissuesContainer = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
+                new JBScrollPane(taskTree), new JBScrollPane(newJPanel));
+        ((JSplitPane) microissuesContainer).setResizeWeight(0.5);
 
         window.getContentManager().addContent(ContentFactory.SERVICE.getInstance().createContent(microissuesContainer, "All issues", true));
     }
@@ -212,9 +225,7 @@ public class TaskTree {
 
             @Override
             public void childAdded(@NotNull PsiTreeChangeEvent event) {
-                System.out.println("CHILD ADDED");
-                System.out.println(event.getElement().getText());
-                System.out.println(event.getPropertyName());
+
             }
 
             @Override
@@ -239,10 +250,7 @@ public class TaskTree {
                         DefaultTreeModel defaultModel = (DefaultTreeModel) taskTree.getModel();
                         defaultModel.nodeChanged(ticketToNode.get(commentToTicket.get(oldChild)));
                         commentToTicket.remove(oldChild);
-
-                        //ticketToNode.get(commentToTicket.get(event.getOldChild())).setUserObject("Changed :3");
                     }
-                    //System.out.println("Printing new child's text: " + event.getNewChild().getText());
                 }
             }
 

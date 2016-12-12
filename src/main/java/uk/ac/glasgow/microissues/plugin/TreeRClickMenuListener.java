@@ -2,9 +2,6 @@ package uk.ac.glasgow.microissues.plugin;
 
 import com.google.common.base.Charsets;
 import com.intellij.openapi.wm.ToolWindow;
-import com.intellij.ui.components.JBScrollPane;
-import com.intellij.ui.content.ContentFactory;
-import com.intellij.ui.treeStructure.Tree;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.diff.DiffEntry;
@@ -18,18 +15,15 @@ import org.eclipse.jgit.revwalk.RevTree;
 import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.treewalk.AbstractTreeIterator;
 import org.eclipse.jgit.treewalk.CanonicalTreeParser;
-import org.eclipse.jgit.treewalk.filter.PathFilter;
 import uk.ac.glasgow.microissues.fuzzyhash.FuzzyMatch;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -98,7 +92,6 @@ public class TreeRClickMenuListener implements ActionListener {
                             ByteArrayOutputStream baos = new ByteArrayOutputStream();
                             loader.copyTo(baos);
                             String oldFile = new String(baos.toByteArray(), Charsets.UTF_8);
-                            System.out.println(FuzzyMatch.getRatio("Hi", "Hi", false));
                             String pattern = "//.*|(\"(?:\\\\[^\"]|\\\\\"|.)*?\")|(?s)/\\*.*?\\*/";
                             Pattern r = Pattern.compile(pattern);
                             Matcher m = r.matcher(oldFile);
