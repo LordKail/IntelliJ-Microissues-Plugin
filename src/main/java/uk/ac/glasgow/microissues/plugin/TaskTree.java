@@ -73,9 +73,10 @@ public class TaskTree {
 
         for(PsiComment comment : psiCommentList){
             Ticket addingTicket = new Ticket();
-            addingTicket = addingTicket.buildIssue(comment);
-            if(addingTicket != null) {
-                System.out.println("CONSTRUCTED ISSUE CLASS, Summary: " + addingTicket.getSummary());
+            addingTicket.buildIssue(comment);
+            System.out.println("CONSTRUCTED ISSUE CLASS, Summary: " + addingTicket.getSummary());
+
+            if(addingTicket.getSummary() != null){
                 ticketList.add(addingTicket);
                 commentToTicket.put(comment, addingTicket);
             }
@@ -118,20 +119,6 @@ public class TaskTree {
                             =(DefaultMutableTreeNode)taskTree.getSelectionPath().getLastPathComponent();
                     System.out.println(selectedElement.getUserObject());
                     if(e.getClickCount() == 1){
-                        /*
-                        // Retrieving the info window.
-                        JPanel interWindow1 = (JPanel) window.getContentManager().getComponent().getComponents()[0];
-                        JPanel interWindow2 = (JPanel) interWindow1.getComponents()[0];
-                        JPanel interWindow3 = (JPanel) interWindow2.getComponents()[0];
-                        JBScrollPane scrollPane = (JBScrollPane) interWindow3.getComponent(1);
-                        JViewport viewport = (JViewport) scrollPane.getViewport();
-                        JPanel panel = (JPanel) viewport.getView();
-                        JLabel label = (JLabel) panel.getComponent(0);
-                        Ticket selected = (Ticket) selectedElement.getUserObject();
-                        label.setText("<html><h3> Ticket Information </h1>" +
-                                "<p>Summary: " + selected.getSummary() + "</p>" +
-                                "<p>Type: " + selected.getType() + "</p></html>");
-                    */
 
                         Ticket selected = (Ticket) selectedElement.getUserObject();
                         ticketInfoTab.setText("<html><h3> Ticket Information </h1>" +
@@ -165,13 +152,10 @@ public class TaskTree {
         //microissuesContainer.add(new JBScrollPane(taskTree), BorderLayout.WEST);
 
         // Adding an information window for the ticket
-        ticketInfoTab.setOpaque(true);
-        ticketInfoTab.setBackground(Color.WHITE);
         JPanel newJPanel = new JPanel();
         FlowLayout layout = (FlowLayout) newJPanel.getLayout();
         layout.setVgap(0);
         layout.setAlignment(FlowLayout.LEFT);
-        newJPanel.setBackground(Color.WHITE);
         newJPanel.add(ticketInfoTab, BorderLayout.WEST);
         //microissuesContainer.add(new JBScrollPane(newJPanel));
 
@@ -183,8 +167,10 @@ public class TaskTree {
     }
 
     public void createNodes(DefaultMutableTreeNode top){
+        System.out.println("Printing out ticketList size: " + ticketList.size());
         for(Ticket ticket : ticketList){
             DefaultMutableTreeNode ticketNode = new DefaultMutableTreeNode(ticket);
+            System.out.println("Printing ticket summary: " + ticket);
             ticketToNode.put(ticket, ticketNode);
             top.add(ticketNode);
         }
@@ -244,7 +230,8 @@ public class TaskTree {
                         PsiComment oldChild = (PsiComment) event.getOldChild();
                         PsiComment newChild = (PsiComment) event.getNewChild();
                         Ticket changeTicket = commentToTicket.get(oldChild);
-                        Ticket newTicket = changeTicket.buildIssue(newChild);
+                        Ticket newTicket = changeTicket;
+                        newTicket.buildIssue(newChild);
                         commentToTicket.put(newChild, commentToTicket.get(oldChild));
                         ticketToNode.get(commentToTicket.get(oldChild)).setUserObject(newTicket);
                         DefaultTreeModel defaultModel = (DefaultTreeModel) taskTree.getModel();

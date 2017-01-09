@@ -10,6 +10,7 @@ import org.eclipse.jgit.errors.MissingObjectException;
 import org.eclipse.jgit.internal.storage.file.FileRepository;
 import org.eclipse.jgit.lib.ObjectLoader;
 import org.eclipse.jgit.lib.ObjectReader;
+import org.eclipse.jgit.lib.PersonIdent;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevTree;
 import org.eclipse.jgit.revwalk.RevWalk;
@@ -28,6 +29,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -50,7 +52,7 @@ public class TreeRClickMenuListener implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         // Was used for displaying information in the info window. Currently a proof of context and might be removed.
         System.out.println("SELECTED:" + e.getActionCommand());
-        ArrayList<String> olderVersions = new ArrayList<>();
+        LinkedHashMap<String, PersonIdent> olderVersions = new LinkedHashMap<>();
         File gitFolder = new File("C:\\Users\\Al3x\\IdeaProjects\\Microissues" + "\\.git");
         FileRepository repo = null;
         try {
@@ -92,6 +94,8 @@ public class TreeRClickMenuListener implements ActionListener {
                             ByteArrayOutputStream baos = new ByteArrayOutputStream();
                             loader.copyTo(baos);
                             String oldFile = new String(baos.toByteArray(), Charsets.UTF_8);
+
+                            // Pattern for detecting comments
                             String pattern = "//.*|(\"(?:\\\\[^\"]|\\\\\"|.)*?\")|(?s)/\\*.*?\\*/";
                             Pattern r = Pattern.compile(pattern);
                             Matcher m = r.matcher(oldFile);
@@ -102,9 +106,13 @@ public class TreeRClickMenuListener implements ActionListener {
                                     int ratio = FuzzyMatch.getRatio(m.group(0),
                                             ticket.getAssociatedComment().getText(), false);
                                     System.out.println("FUZZY MATCH RATIO: " + ratio);
-                                    if(ratio>50){
-                                        olderVersions.add(commit.getCommitterIdent().getName());
-                                        olderVersions.add(m.group(0));
+                                    System.out.println("Between: \n" + ticket.getAssociatedComment().getText());
+                                    System.out.println(m.group(0));
+                                    System.out.println("Ratio: " + ratio);
+                                    if(ratio>45){
+                                        if(ratio != 100) {
+                                            olderVersions.put(m.group(0), commit.getCommitterIdent());
+                                        }
                                     }
                                 }
                                 System.out.println("FOUND COMMENT: " + m.group(0));
@@ -124,8 +132,12 @@ public class TreeRClickMenuListener implements ActionListener {
         }
 
         StringBuilder sb = new StringBuilder();
-        for(String oldComment : olderVersions){
+        sb.append("The history for this ticket: \n");
+        for(String oldComment : olderVersions.keySet()){
+            sb.append("Committed on: " + olderVersions.get(oldComment).getWhen() + "\n");
+            sb.append("By: " + olderVersions.get(oldComment).getName() + "\n");
             sb.append(oldComment + "\n");
+            sb.append("\n");
         }
         JOptionPane.showMessageDialog(null, sb);
     }
