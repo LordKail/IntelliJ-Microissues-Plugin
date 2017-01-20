@@ -40,13 +40,9 @@ public class SetupToolWindow implements ProjectComponent{
     @Override
     public void projectOpened() {
         ToolWindow tasksToolWindow = ToolWindowManager.getInstance(project).registerToolWindow(toolwindowTitle, false, ToolWindowAnchor.BOTTOM);
-        //tasksToolWindow.getContentManager().addContent(ContentFactory.SERVICE.getInstance().createContent(microissuesContainer, "All issues", true));
-        Tree randomTree;
-        DefaultMutableTreeNode top =
-                new DefaultMutableTreeNode("All issues");
-        randomTree = new Tree(top);
         TaskTree taskTree = new TaskTree(project);
         taskTree.processComments();
+
         //tasksToolWindow.getContentManager().getComponent().add(randomTree, BorderLayout.CENTER);
     }
 

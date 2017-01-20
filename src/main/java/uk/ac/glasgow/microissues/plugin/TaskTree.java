@@ -9,7 +9,6 @@ import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.psi.*;
 
 import com.intellij.ui.components.JBScrollPane;
-import com.intellij.ui.components.panels.FlowLayoutWrapper;
 import com.intellij.ui.content.ContentFactory;
 import com.intellij.ui.treeStructure.Tree;
 import org.jetbrains.annotations.NotNull;
@@ -17,7 +16,6 @@ import org.jetbrains.annotations.NotNull;
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreePath;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -46,6 +44,7 @@ public class TaskTree {
 
     public void isPsiComment(PsiElement element){
         if(element instanceof PsiComment){
+            System.out.println("ADDING TO psiCommentList");
             psiCommentList.add((PsiComment) element);
         } else {
             for(PsiElement psiChild : element.getChildren()){
@@ -91,6 +90,7 @@ public class TaskTree {
     public void buildTree(ToolWindow window) {
         //microissuesContainer = new JPanel(new BorderLayout(1, 1));
         //microissuesContainer.setBorder(null);
+        System.out.println("BUILDING TREE");
         DefaultMutableTreeNode top =
                 new DefaultMutableTreeNode("All issues");
         createNodes(top);
@@ -110,7 +110,7 @@ public class TaskTree {
                             =(DefaultMutableTreeNode)taskTree.getSelectionPath().getLastPathComponent();
                     JPopupMenu popup = new JPopupMenu();
                     JMenuItem viewInfo= new JMenuItem("View ticket history");
-                    viewInfo.addActionListener(new TreeRClickMenuListener(window, selectedElement));
+                    viewInfo.addActionListener(new TreeMenuListener(window, selectedElement));
                     popup.add(viewInfo);
                     popup.show(taskTree, e.getX(), e.getY());
 

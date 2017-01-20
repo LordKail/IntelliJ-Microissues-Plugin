@@ -19,17 +19,21 @@ public class Ticket {
     private String type; // The type of the ticket.
     private PsiComment associatedComment; // The associated Psi Element (PsiComment).
     private String associatedFile; // The associated Java file name in which the ticket resides.
+    private TicketHistory ticketHistory;
 
     // REGEX for scanning the ticket for tags in the comment.
     private static final Pattern TAG_REGEX = Pattern.compile("@(.+?)\\s(.+?)\\n");
 
     // Default empty constructor
-    public Ticket() {}
+    public Ticket() {
+        this.ticketHistory = new TicketHistory(this);
+    }
 
     public Ticket(String summary, String description, String type, PsiComment associatedComment){
         this.summary = summary;
         this.description = description;
         this.type = type;
+        this.ticketHistory = new TicketHistory(this);
         this.associatedComment = associatedComment;
     }
 
@@ -37,8 +41,8 @@ public class Ticket {
     public void buildIssue(PsiComment comment) {
         this.associatedComment = comment;
 
-        PsiFile psifile = (PsiFile) comment.getParent().getParent();
-        this.associatedFile = psifile.getName();
+        //PsiFile psifile = (PsiFile) comment.getParent().getParent();
+        //this.associatedFile = psifile.getName();
 
         String commentString = comment.getText();
         buildIssue(commentString);
@@ -76,8 +80,23 @@ public class Ticket {
         return summary;
     }
     public String getType() { return type; }
-    public String getAssociatedFile(){ return associatedFile; }
+    public String getAssociatedFile(){
+        if (associatedFile != null){
+            return associatedFile;
+        }
+        else{
+            PsiFile psiFile = (PsiFile) associatedComment.getParent().getParent();
+            this.associatedFile = psiFile.getName();
+            return associatedFile;
+        }
+    }
+
+    public TicketHistory getTicketHistory(){ return ticketHistory; }
     public PsiComment getAssociatedComment() { return associatedComment; }
+
+    public void setTicketHistory(TicketHistory ticketHistory) {
+        this.ticketHistory = new TicketHistory(this);
+    }
 
     public String toString(){
         return summary;
