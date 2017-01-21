@@ -211,13 +211,23 @@ public class TaskTree {
 
             @Override
             public void childAdded(@NotNull PsiTreeChangeEvent event) {
-
+                System.out.println("CHILD HAS BEEN ADDED");
+                if(event.getChild() instanceof PsiComment) {
+                    System.out.println("Child text: " + event.getChild().getText());
+                }
             }
 
             @Override
             public void childRemoved(@NotNull PsiTreeChangeEvent event) {
                 System.out.println(event.getChild().getText());
                 System.out.println("CHILD REMOVED");
+                if(commentToTicket.containsKey(event.getChild())){
+                    Ticket removedTicket = commentToTicket.get(event.getChild());
+                    DefaultMutableTreeNode removedNode = ticketToNode.get(removedTicket);
+                    DefaultTreeModel defaultModel = (DefaultTreeModel) taskTree.getModel();
+                    defaultModel.removeNodeFromParent(removedNode);
+                    defaultModel.reload();
+                }
             }
 
             @Override
@@ -237,6 +247,19 @@ public class TaskTree {
                         DefaultTreeModel defaultModel = (DefaultTreeModel) taskTree.getModel();
                         defaultModel.nodeChanged(ticketToNode.get(commentToTicket.get(oldChild)));
                         commentToTicket.remove(oldChild);
+                    }
+
+                    else if(event.getNewChild().getText().contains("@tckt")){
+                        System.out.println("A NEW TICKET HAS HAS BEEN CREATED.");
+                        Ticket newTicket = new Ticket();
+                        newTicket.buildIssue((PsiComment) event.getNewChild());
+                        commentToTicket.put((PsiComment) event.getNewChild(), newTicket);
+                        DefaultTreeModel defaultModel = (DefaultTreeModel) taskTree.getModel();
+                        DefaultMutableTreeNode root = (DefaultMutableTreeNode) defaultModel.getRoot();
+                        DefaultMutableTreeNode newChild = new DefaultMutableTreeNode(newTicket);
+                        root.add(newChild);
+                        defaultModel.reload();
+                        ticketToNode.put(newTicket, newChild);
                     }
                 }
             }

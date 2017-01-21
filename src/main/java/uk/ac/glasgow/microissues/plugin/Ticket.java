@@ -17,9 +17,11 @@ public class Ticket {
     private String summary; // Summary of the ticket.
     private String description; // Description of the ticket
     private String type; // The type of the ticket.
+    private int priority;
     private PsiComment associatedComment; // The associated Psi Element (PsiComment).
     private String associatedFile; // The associated Java file name in which the ticket resides.
     private TicketHistory ticketHistory;
+    private boolean oldTicket = false;
 
     // REGEX for scanning the ticket for tags in the comment.
     private static final Pattern TAG_REGEX = Pattern.compile("@(.+?)\\s(.+?)\\n");
@@ -27,6 +29,12 @@ public class Ticket {
     // Default empty constructor
     public Ticket() {
         this.ticketHistory = new TicketHistory(this);
+    }
+
+    public Ticket(boolean oldTicket){
+        this.ticketHistory = new TicketHistory(this);
+        this.oldTicket = true;
+
     }
 
     public Ticket(String summary, String description, String type, PsiComment associatedComment){
@@ -80,6 +88,7 @@ public class Ticket {
         return summary;
     }
     public String getType() { return type; }
+
     public String getAssociatedFile(){
         if (associatedFile != null){
             return associatedFile;
@@ -107,8 +116,12 @@ public class Ticket {
         StringBuilder sb = new StringBuilder();
         sb.append("<html><h3> Ticket Information </h3>");
         sb.append("<p>Summary: " + summary + "</p>");
-        sb.append("<p>Type: " + type + "</p>");
-        sb.append("<p> Description: " + description + "</p>");
+        if(type != null) {
+            sb.append("<p>Type: " + type + "</p>");
+        }
+        if(description != null) {
+            sb.append("<p> Description: " + description + "</p>");
+        }
         sb.append("</html>");
 
         return sb.toString();

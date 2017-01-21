@@ -14,5 +14,18 @@ public class TicketHistoryTest {
     /*
     @tckt Ticket summary.
     @type BUG.
+    @priority 9
     */
+
+    /*
+    * @tckt Ticket summary 2.
+    * @type BUG.
+    * */
+
+    /* Line here.
+    @tckt This actually works.
+    @type TASK
+     */
+
+
 }
