@@ -11,6 +11,7 @@ import com.intellij.psi.*;
 import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.content.ContentFactory;
 import com.intellij.ui.treeStructure.Tree;
+import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -37,6 +38,8 @@ public class TaskTree {
     private JComponent microissuesContainer;
     private Tree taskTree;
     private Project project;
+    boolean unfinishedComment;
+    PsiComment unfinishedPsiComment;
 
     public TaskTree(Project project) {
         this.project = project;
@@ -121,9 +124,7 @@ public class TaskTree {
                     if(e.getClickCount() == 1){
 
                         Ticket selected = (Ticket) selectedElement.getUserObject();
-                        ticketInfoTab.setText("<html><h3> Ticket Information </h1>" +
-                            "<p>Summary: " + selected.getSummary() + "</p>" +
-                            "<p>Type: " + selected.getType() + "</p></html>");
+                        ticketInfoTab.setText(selected.toPanelString());
                     }
                     // Ridiculous nested if statement block
                     if(e.getClickCount() == 2){
@@ -212,8 +213,31 @@ public class TaskTree {
             @Override
             public void childAdded(@NotNull PsiTreeChangeEvent event) {
                 System.out.println("CHILD HAS BEEN ADDED");
-                if(event.getChild() instanceof PsiComment) {
-                    System.out.println("Child text: " + event.getChild().getText());
+                System.out.println(event.getChild().getText());
+                if(event.getChild() instanceof PsiComment && event.getChild().getText().endsWith("*/")) {
+                    System.out.println(commentToTicket.containsKey((PsiComment) event.getChild()));
+                    if(event.getChild().getText().contains("@tckt") && !commentToTicket.containsKey((PsiComment) event.getChild())){
+                        boolean replacementPsiElement = false;
+                        for(PsiComment comment : commentToTicket.keySet()){
+                            if(comment.getText().equals(event.getChild().getText())){
+                                replacementPsiElement = true;
+                                Ticket oldPsiTicket = commentToTicket.get(comment);
+                                commentToTicket.remove(comment);
+                                commentToTicket.put((PsiComment) event.getChild(), oldPsiTicket);
+                            }
+                        }
+                        if(!replacementPsiElement) {
+                            Ticket newTicket = new Ticket();
+                            newTicket.buildIssue((PsiComment) event.getChild());
+                            commentToTicket.put((PsiComment) event.getChild(), newTicket);
+                            DefaultTreeModel defaultModel = (DefaultTreeModel) taskTree.getModel();
+                            DefaultMutableTreeNode root = (DefaultMutableTreeNode) defaultModel.getRoot();
+                            DefaultMutableTreeNode newNode = new DefaultMutableTreeNode(newTicket);
+                            root.add(newNode);
+                            ticketToNode.put(newTicket, newNode);
+                            defaultModel.reload();
+                        }
+                    }
                 }
             }
 
@@ -221,7 +245,7 @@ public class TaskTree {
             public void childRemoved(@NotNull PsiTreeChangeEvent event) {
                 System.out.println(event.getChild().getText());
                 System.out.println("CHILD REMOVED");
-                if(commentToTicket.containsKey(event.getChild())){
+                if(commentToTicket.containsKey(event.getChild()) && !unfinishedComment){
                     Ticket removedTicket = commentToTicket.get(event.getChild());
                     DefaultMutableTreeNode removedNode = ticketToNode.get(removedTicket);
                     DefaultTreeModel defaultModel = (DefaultTreeModel) taskTree.getModel();
@@ -233,11 +257,32 @@ public class TaskTree {
             @Override
             public void childReplaced(@NotNull PsiTreeChangeEvent event) {
                 System.out.println("Child has been replaced");
-                //System.out.println("Printing replaced child's text: " + event.getOldChild().getText());
-                if(event.getOldChild() instanceof PsiComment) {
+                System.out.println("Printing replaced child's text: " + event.getOldChild().getText());
+                System.out.println("Printing new child's text: " + event.getNewChild().getText());
+                if(StringUtils.countMatches(event.getNewChild().getText(), "/*")>1){
+                    unfinishedComment = true;
+                    unfinishedPsiComment = (PsiComment) event.getOldChild();
+                }
+                else{
+                    unfinishedComment = false;
+                }
+                if(event.getOldChild() instanceof PsiComment && !unfinishedComment) {
                     if (commentToTicket.containsKey(event.getOldChild())) {
                         System.out.println("COMMENT WAS PREVIOUSLY IN psiCommentList!");
                         PsiComment oldChild = (PsiComment) event.getOldChild();
+                        PsiComment newChild = (PsiComment) event.getNewChild();
+                        Ticket changeTicket = commentToTicket.get(oldChild);
+                        Ticket newTicket = changeTicket;
+                        newTicket.buildIssue(newChild);
+                        commentToTicket.put(newChild, commentToTicket.get(oldChild));
+                        ticketToNode.get(commentToTicket.get(oldChild)).setUserObject(newTicket);
+                        DefaultTreeModel defaultModel = (DefaultTreeModel) taskTree.getModel();
+                        defaultModel.nodeChanged(ticketToNode.get(commentToTicket.get(oldChild)));
+                        commentToTicket.remove(oldChild);
+                    }
+
+                    else if(StringUtils.countMatches(event.getOldChild().getText(), "/*")>1){
+                        PsiComment oldChild = unfinishedPsiComment;
                         PsiComment newChild = (PsiComment) event.getNewChild();
                         Ticket changeTicket = commentToTicket.get(oldChild);
                         Ticket newTicket = changeTicket;

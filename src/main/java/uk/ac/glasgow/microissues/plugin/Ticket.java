@@ -64,6 +64,14 @@ public class Ticket {
             this.summary = tagMap.get("tckt");
             this.type = tagMap.get("type");
             this.description = "";
+            System.out.println("PRIORITY IN TAGMAP: " + tagMap.get("priority"));
+            if(tagMap.get("priority") != null) {
+                try {
+                    this.priority = Integer.parseInt(tagMap.get("priority"));
+                } catch (Exception e) {
+                    this.priority = -1;
+                }
+            }
             String lines[] = commentString.split("\\r?\\n");
             for (String line : lines){
                 if(!line.contains("@") && !line.contains("/*") && !line.contains("*/")){
@@ -119,9 +127,18 @@ public class Ticket {
         if(type != null) {
             sb.append("<p>Type: " + type + "</p>");
         }
-        if(description != null) {
-            sb.append("<p> Description: " + description + "</p>");
+        if(priority != 0) {
+            if(priority == -1){
+                sb.append("<p> Priority: Please use an integer value for the priority </p>");
+            } else {
+                sb.append("<p>Priority: " + priority + "</p>");
+            }
         }
+
+        if(!description.equals("")) {
+            sb.append("<p>Description: " + description + "</p>");
+        }
+
         sb.append("</html>");
 
         return sb.toString();

@@ -17,14 +17,15 @@ public class TicketHistoryTest {
     @priority 9
     */
 
-    /*
-    * @tckt Ticket summary 2.
-    * @type BUG.
-    * */
-
     /* Line here.
-    @tckt This actually works.
+    @tckt Summary here.
     @type TASK
+    */
+
+    /*
+    @tckt New Ticket
+    @type Anything
+    @priority 5
      */
 
 
