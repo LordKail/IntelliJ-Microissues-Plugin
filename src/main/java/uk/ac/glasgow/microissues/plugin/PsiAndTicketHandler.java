@@ -38,7 +38,7 @@ public class PsiAndTicketHandler {
 
                 Ticket newTicket = new Ticket();
                 newTicket.buildIssue((PsiComment) element);
-
+                
                 taskTree.addTicket(newTicket, fileName);
 
                 System.out.println(fileName);
@@ -60,6 +60,7 @@ public class PsiAndTicketHandler {
                 if(fileInProject.getFileType().getName().equals("JAVA")){
                     // Something to do here.
                     PsiFile psiFile = PsiManager.getInstance(project).findFile(fileInProject);
+                    taskTree.flushTicketsInFile(psiFile.getVirtualFile().getName());
                     scanPsiFile(psiFile, psiFile);
                 }
                 return true;
@@ -107,12 +108,26 @@ public class PsiAndTicketHandler {
 
             @Override
             public void childAdded(@NotNull PsiTreeChangeEvent event) {
-                System.out.println("The following child has been added: ");
-                System.out.println(event.getChild().getText());
+                if(event.getChild() instanceof PsiComment) {
+                    System.out.println("The following child has been added: ");
+                    System.out.println(event.getChild().getText());
 
-                if(event.getChild().getText().startsWith("/*") && event.getChild().getText().endsWith("*/")){
-                    if(event.getChild().getText().contains("@tckt")){
-                        System.out.println("A ticket has been added.");
+                    String commentText = event.getChild().getText();
+                    if (commentText.startsWith("/*") && commentText.endsWith("*/")) {
+                        if (commentText.contains("@tckt")) {
+                            PsiFile parent = null;
+                            if(event.getParent() instanceof PsiFile) {
+                                System.out.println("Class of parent: " + event.getParent().getClass().getName());
+                                parent = (PsiFile) event.getParent();
+                            }
+                            if(event.getParent().getParent() instanceof PsiFile) {
+                                System.out.println("Class of parent parent: " + event.getParent().getParent().getClass().getName());
+                                parent = (PsiFile) event.getParent().getParent();
+                            }
+
+                            taskTree.flushTicketsInFile(parent.getVirtualFile().getName());
+                            scanPsiFile(parent, parent);
+                        }
                     }
                 }
 

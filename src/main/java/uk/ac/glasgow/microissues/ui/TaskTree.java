@@ -123,13 +123,20 @@ public class TaskTree {
         window.getContentManager().addContent(ContentFactory.SERVICE.getInstance().createContent(microissuesContainer, "All issues", true));
     }
 
+    public void flushTicketsInFile(String fileName){
+        DefaultTreeModel defaultModel = (DefaultTreeModel) taskTree.getModel();
+        if(fileToNodes.get(fileName) != null) {
+            for (DefaultMutableTreeNode node : fileToNodes.get(fileName)) {
+                defaultModel.removeNodeFromParent(node);
+            }
+        }
+    }
+
     public void addTicket(Ticket newTicket, String fileName){
         DefaultTreeModel defaultModel = (DefaultTreeModel) taskTree.getModel();
         DefaultMutableTreeNode root = (DefaultMutableTreeNode) defaultModel.getRoot();
         DefaultMutableTreeNode newNode = new DefaultMutableTreeNode(newTicket);
         root.add(newNode);
-
-        System.out.println("Adding ticket to JTree: " + newNode.getUserObject().toString() );
 
         fileToNodes.putIfAbsent(fileName, new ArrayList<>());
         fileToNodes.get(fileName).add(newNode);

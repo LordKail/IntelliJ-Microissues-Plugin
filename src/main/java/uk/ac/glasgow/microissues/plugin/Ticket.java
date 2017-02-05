@@ -64,7 +64,7 @@ public class Ticket {
             this.summary = tagMap.get("tckt");
             this.type = tagMap.get("type");
             this.description = "";
-            System.out.println("PRIORITY IN TAGMAP: " + tagMap.get("priority"));
+
             if(tagMap.get("priority") != null) {
                 try {
                     this.priority = Integer.parseInt(tagMap.get("priority"));
