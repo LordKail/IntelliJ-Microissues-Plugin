@@ -38,7 +38,7 @@ public class PsiAndTicketHandler {
 
                 Ticket newTicket = new Ticket();
                 newTicket.buildIssue((PsiComment) element);
-                
+
                 taskTree.addTicket(newTicket, fileName);
 
                 System.out.println(fileName);
@@ -73,69 +73,43 @@ public class PsiAndTicketHandler {
         //buildTree(window);
     }
 
+    public void elementAddedOrRemoved(PsiTreeChangeEvent event){
+        if(event.getChild() instanceof PsiComment) {
+            System.out.println("The following child has been added: ");
+            System.out.println(event.getChild().getText());
+
+            String commentText = event.getChild().getText();
+            if (commentText.startsWith("/*") && commentText.endsWith("*/")) {
+                if (commentText.contains("@tckt")) {
+                    PsiFile parent = null;
+                    if(event.getParent() instanceof PsiFile) {
+                        System.out.println("Class of parent: " + event.getParent().getClass().getName());
+                        parent = (PsiFile) event.getParent();
+                    }
+                    if(event.getParent().getParent() instanceof PsiFile) {
+                        System.out.println("Class of parent parent: " + event.getParent().getParent().getClass().getName());
+                        parent = (PsiFile) event.getParent().getParent();
+                    }
+
+                    taskTree.flushTicketsInFile(parent.getVirtualFile().getName());
+                    scanPsiFile(parent, parent);
+                }
+            }
+        }
+    }
+
     public void addPsiListener(){
         PsiManager.getInstance(project).addPsiTreeChangeListener(new PsiTreeChangeListener() {
 
             @Override
-            public void beforeChildAddition(@NotNull PsiTreeChangeEvent event) {
-
-            }
-
-            @Override
-            public void beforeChildRemoval(@NotNull PsiTreeChangeEvent event) {
-
-            }
-
-            @Override
-            public void beforeChildReplacement(@NotNull PsiTreeChangeEvent event) {
-
-            }
-
-            @Override
-            public void beforeChildMovement(@NotNull PsiTreeChangeEvent event) {
-
-            }
-
-            @Override
-            public void beforeChildrenChange(@NotNull PsiTreeChangeEvent event) {
-
-            }
-
-            @Override
-            public void beforePropertyChange(@NotNull PsiTreeChangeEvent event) {
-
-            }
-
-            @Override
             public void childAdded(@NotNull PsiTreeChangeEvent event) {
-                if(event.getChild() instanceof PsiComment) {
-                    System.out.println("The following child has been added: ");
-                    System.out.println(event.getChild().getText());
-
-                    String commentText = event.getChild().getText();
-                    if (commentText.startsWith("/*") && commentText.endsWith("*/")) {
-                        if (commentText.contains("@tckt")) {
-                            PsiFile parent = null;
-                            if(event.getParent() instanceof PsiFile) {
-                                System.out.println("Class of parent: " + event.getParent().getClass().getName());
-                                parent = (PsiFile) event.getParent();
-                            }
-                            if(event.getParent().getParent() instanceof PsiFile) {
-                                System.out.println("Class of parent parent: " + event.getParent().getParent().getClass().getName());
-                                parent = (PsiFile) event.getParent().getParent();
-                            }
-
-                            taskTree.flushTicketsInFile(parent.getVirtualFile().getName());
-                            scanPsiFile(parent, parent);
-                        }
-                    }
-                }
+                elementAddedOrRemoved(event);
 
             }
 
             @Override
             public void childRemoved(@NotNull PsiTreeChangeEvent event) {
-
+                elementAddedOrRemoved(event);
             }
 
             @Override
@@ -144,19 +118,31 @@ public class PsiAndTicketHandler {
             }
 
             @Override
-            public void childrenChanged(@NotNull PsiTreeChangeEvent event) {
-
-            }
+            public void beforeChildAddition(@NotNull PsiTreeChangeEvent event) {}
 
             @Override
-            public void childMoved(@NotNull PsiTreeChangeEvent event) {
-
-            }
+            public void beforeChildRemoval(@NotNull PsiTreeChangeEvent event) {}
 
             @Override
-            public void propertyChanged(@NotNull PsiTreeChangeEvent event) {
+            public void beforeChildReplacement(@NotNull PsiTreeChangeEvent event) {}
 
-            }
+            @Override
+            public void beforeChildMovement(@NotNull PsiTreeChangeEvent event) {}
+
+            @Override
+            public void beforeChildrenChange(@NotNull PsiTreeChangeEvent event) {}
+
+            @Override
+            public void beforePropertyChange(@NotNull PsiTreeChangeEvent event) {}
+
+            @Override
+            public void childrenChanged(@NotNull PsiTreeChangeEvent event) {}
+
+            @Override
+            public void childMoved(@NotNull PsiTreeChangeEvent event) {}
+
+            @Override
+            public void propertyChanged(@NotNull PsiTreeChangeEvent event) {}
         });
     }
 }

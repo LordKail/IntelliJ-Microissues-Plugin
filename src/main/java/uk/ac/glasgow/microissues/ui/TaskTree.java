@@ -20,8 +20,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * The class that is responsible for processing the Psi elements and thus creating the appropriate JTree and Ticket
@@ -32,8 +32,8 @@ public class TaskTree {
     private ArrayList<VirtualFile> vFiles = new ArrayList<>();
     private ArrayList<PsiComment> psiCommentList = new ArrayList<>();
     private ArrayList<Ticket> ticketList = new ArrayList<>();
-    private HashMap<Ticket, DefaultMutableTreeNode> ticketToNode = new HashMap<>();
-    private HashMap<PsiComment, Ticket> commentToTicket = new HashMap<>();
+    private ConcurrentHashMap<Ticket, DefaultMutableTreeNode> ticketToNode = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<PsiComment, Ticket> commentToTicket = new ConcurrentHashMap<>();
     private JComponent microissuesContainer;
     private Tree taskTree;
     private Project project;
@@ -41,7 +41,7 @@ public class TaskTree {
     PsiComment unfinishedPsiComment;
 
     //Stuff relating to the tree.
-    private ConcurrentHashMap<String, ArrayList<DefaultMutableTreeNode>> fileToNodes;
+    private ConcurrentHashMap<String, CopyOnWriteArrayList<DefaultMutableTreeNode>> fileToNodes;
 
     public TaskTree(Project project) {
         this.project = project;
@@ -127,7 +127,11 @@ public class TaskTree {
         DefaultTreeModel defaultModel = (DefaultTreeModel) taskTree.getModel();
         if(fileToNodes.get(fileName) != null) {
             for (DefaultMutableTreeNode node : fileToNodes.get(fileName)) {
-                defaultModel.removeNodeFromParent(node);
+                System.out.println(((Ticket) node.getUserObject()).getSummary());
+                if(node.isLeaf()) {
+                    defaultModel.removeNodeFromParent(node);
+                    fileToNodes.get(fileName).remove(node);
+                }
             }
         }
     }
@@ -138,7 +142,7 @@ public class TaskTree {
         DefaultMutableTreeNode newNode = new DefaultMutableTreeNode(newTicket);
         root.add(newNode);
 
-        fileToNodes.putIfAbsent(fileName, new ArrayList<>());
+        fileToNodes.putIfAbsent(fileName, new CopyOnWriteArrayList<>());
         fileToNodes.get(fileName).add(newNode);
 
         System.out.println("Added ticket to the tree!" + newNode.getUserObject().toString());
