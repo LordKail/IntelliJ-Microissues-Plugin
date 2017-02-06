@@ -149,4 +149,10 @@ public class TaskTree {
         defaultModel.reload();
     }
 
+    public void fileRenamed(String oldFileName, String newFileName){
+        if(fileToNodes.containsKey(oldFileName) && !fileToNodes.containsKey(newFileName)){
+            fileToNodes.put(newFileName, fileToNodes.remove(oldFileName));
+            System.out.println("File has been changed!");
+        }
+    }
 }

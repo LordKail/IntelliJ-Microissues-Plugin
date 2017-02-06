@@ -114,7 +114,20 @@ public class PsiAndTicketHandler {
 
             @Override
             public void childReplaced(@NotNull PsiTreeChangeEvent event) {
-                elementAddedOrRemoved(event, event.getNewChild());
+                String newChildText = event.getNewChild().getText();
+                String oldChildText = event.getOldChild().getText();
+                System.out.println("Old Child: " + oldChildText);
+                System.out.println("New Child: " + newChildText);
+                if(newChildText.startsWith("file://") && newChildText.endsWith(".java")){
+                    String oldFileName = oldChildText.substring(oldChildText.lastIndexOf('/') + 1);
+                    String newFileName = newChildText.substring(newChildText.lastIndexOf('/') + 1);
+
+                    System.out.println("About to enter fileRenamed:");
+                    taskTree.fileRenamed(oldFileName, newFileName);
+                }
+                else {
+                    elementAddedOrRemoved(event, event.getNewChild());
+                }
             }
 
             @Override
