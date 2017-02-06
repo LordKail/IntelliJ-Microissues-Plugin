@@ -73,12 +73,12 @@ public class PsiAndTicketHandler {
         //buildTree(window);
     }
 
-    public void elementAddedOrRemoved(PsiTreeChangeEvent event){
-        if(event.getChild() instanceof PsiComment) {
+    public void elementAddedOrRemoved(PsiTreeChangeEvent event, PsiElement elementToCheck){
+        if(elementToCheck instanceof PsiComment) {
             System.out.println("The following child has been added: ");
-            System.out.println(event.getChild().getText());
+            System.out.println(elementToCheck.getText());
 
-            String commentText = event.getChild().getText();
+            String commentText = elementToCheck.getText();
             if (commentText.startsWith("/*") && commentText.endsWith("*/")) {
                 if (commentText.contains("@tckt")) {
                     PsiFile parent = null;
@@ -103,18 +103,18 @@ public class PsiAndTicketHandler {
 
             @Override
             public void childAdded(@NotNull PsiTreeChangeEvent event) {
-                elementAddedOrRemoved(event);
+                elementAddedOrRemoved(event, event.getChild());
 
             }
 
             @Override
             public void childRemoved(@NotNull PsiTreeChangeEvent event) {
-                elementAddedOrRemoved(event);
+                elementAddedOrRemoved(event, event.getChild());
             }
 
             @Override
             public void childReplaced(@NotNull PsiTreeChangeEvent event) {
-
+                elementAddedOrRemoved(event, event.getNewChild());
             }
 
             @Override
