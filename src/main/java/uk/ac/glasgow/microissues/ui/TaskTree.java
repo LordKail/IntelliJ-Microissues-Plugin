@@ -62,6 +62,7 @@ public class TaskTree {
 
         MouseListener ml = new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
+
                 System.out.println("MOUSE CLICKED");
                 if (SwingUtilities.isRightMouseButton(e)) {
                     System.out.println("RIGHT MOUSE CLICKED");
@@ -75,28 +76,15 @@ public class TaskTree {
 
                 }else{
                     DefaultMutableTreeNode selectedElement
-                            =(DefaultMutableTreeNode)taskTree.getSelectionPath().getLastPathComponent();
+                            = (DefaultMutableTreeNode) taskTree.getSelectionPath().getLastPathComponent();
+                    Ticket selectedTicket = (Ticket) selectedElement.getUserObject();
                     System.out.println(selectedElement.getUserObject());
                     if(e.getClickCount() == 1){
-
-                        Ticket selected = (Ticket) selectedElement.getUserObject();
-                        ticketInfoTab.setText(selected.toPanelString());
-                    }
-                    // Ridiculous nested if statement block
-                    if(e.getClickCount() == 2){
-                        System.out.println("Double click!");
-                        if(ticketToNode.containsValue(selectedElement)){
-                            for(Ticket key : ticketToNode.keySet()){
-                                if(ticketToNode.get(key).equals(selectedElement)){
-                                    for(PsiComment comment : commentToTicket.keySet()){
-                                        if(commentToTicket.get(comment).equals(key)){
-                                            NavigatablePsiElement navigatable = (NavigatablePsiElement) comment.getParent();
-                                            navigatable.navigate(true);
-                                        }
-                                    }
-                                }
-                            }
-                        }
+                        ticketInfoTab.setText(selectedTicket.toPanelString());
+                    } else {
+                        System.out.println("First child of PsiComment: ");
+                        NavigatablePsiElement navigatable = (NavigatablePsiElement) selectedTicket.getAssociatedComment().getParent();
+                        navigatable.navigate(true);
                     }
                 }
 
