@@ -17,6 +17,7 @@ import org.eclipse.jgit.treewalk.AbstractTreeIterator;
 import org.eclipse.jgit.treewalk.CanonicalTreeParser;
 import uk.ac.glasgow.microissues.fuzzyhash.FuzzyMatch;
 
+import javax.swing.*;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -41,6 +42,7 @@ public class TicketHistory {
     }
 
     public LinkedHashMap<Ticket, PersonIdent> retrieveTicketHistory() {
+        String ticketText = mainTicket.getAssociatedComment().getText();
         if(olderVersionTickets != null){
             System.out.println("OlderVersions is not null!");
             return olderVersionTickets;
@@ -48,15 +50,32 @@ public class TicketHistory {
         else {
             System.out.println("OlderVersions is null, creating a list.");
             olderVersionTickets = new LinkedHashMap<>();
-            File gitFolder = new File("C:\\Users\\Al3x\\IdeaProjects\\Microissues" + "\\.git");
+            //File gitFolder = new File("C:\\Users\\Al3x\\IdeaProjects\\Microissues" + "\\.git");
+
+            //Create a file chooser
+            final JFileChooser fc = new JFileChooser();
+            fc.setFileHidingEnabled(false);
+            fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+
+
+            //In response to a button click:
+            int returnVal = fc.showOpenDialog(null);
+
+            File file = fc.getSelectedFile();
+            if (returnVal == JFileChooser.APPROVE_OPTION) {
+                //This is where a real application would open the file.
+                System.out.println("Opening: " + file.getName() + ".");
+                System.out.println(file.getAbsolutePath());
+            }
+
+            File gitFolder = new File(file.getAbsolutePath() + "/.git");
             FileRepository repo = null;
             try {
-                repo = new FileRepository("C:\\Users\\Al3x\\IdeaProjects\\Microissues" + "\\.git");
+                repo = new FileRepository(gitFolder);
             } catch (IOException e1) {
                 e1.printStackTrace();
             }
             Git git = new Git(repo);
-            RevWalk walk = new RevWalk(repo);
             System.out.println("Commits of repo: ");
             System.out.println("-------------------------------------");
 
@@ -80,40 +99,43 @@ public class TicketHistory {
                         System.out.println("Affected files: ");
                         for (DiffEntry entry : diff) {
                             Path p = Paths.get(entry.getNewPath());
-                            System.out.println("Associated file in ticket: " + mainTicket.getAssociatedFile());
-                            System.out.println("File name the ticket that was rclicked on: " + p.getFileName());
-                            if(p.getFileName().toString().equals(mainTicket.getAssociatedFile())) {
-                                System.out.println(entry.getNewId());
-                                ObjectLoader loader = repo.open(entry.getNewId().toObjectId());
-                                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                                loader.copyTo(baos);
-                                String oldFile = new String(baos.toByteArray(), Charsets.UTF_8);
+                            if(p.getFileName().toString().endsWith(".java")) {
+                                if (p.getFileName().toString().equals(mainTicket.getAssociatedFile())) {
+                                    System.out.println("File name of diff: " + p.getFileName());
+                                    System.out.println("Associated file in ticket: " + mainTicket.getAssociatedFile());
+                                    System.out.println(entry.getNewId());
+                                    ObjectLoader loader = repo.open(entry.getNewId().toObjectId());
+                                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                                    loader.copyTo(baos);
+                                    String oldFile = new String(baos.toByteArray(), Charsets.UTF_8);
 
-                                // Pattern for detecting comments
-                                String pattern = "//.*|(\"(?:\\\\[^\"]|\\\\\"|.)*?\")|(?s)/\\*.*?\\*/";
-                                Pattern r = Pattern.compile(pattern);
-                                Matcher m = r.matcher(oldFile);
+                                    // Pattern for detecting comments
+                                    String pattern = "//.*|(\"(?:\\\\[^\"]|\\\\\"|.)*?\")|(?s)/\\*.*?\\*/";
+                                    Pattern r = Pattern.compile(pattern);
+                                    Matcher m = r.matcher(oldFile);
 
-                                while(m.find()){
-                                    if(m.group(0).contains("@tckt")){
-                                        System.out.println("FOUND TICKET;");
-                                        int ratio = FuzzyMatch.getRatio(m.group(0),
-                                                mainTicket.getAssociatedComment().getText(), false);
-                                        System.out.println("FUZZY MATCH RATIO: " + ratio);
-                                        System.out.println("Between: \n" + mainTicket.getAssociatedComment().getText());
-                                        System.out.println(m.group(0));
-                                        System.out.println("Ratio: " + ratio);
-                                        if(ratio>45){
-                                            if(ratio != 100) {
-                                                Ticket olderVersion = new Ticket();
-                                                olderVersion.buildIssue(m.group(0));
-                                                olderVersionTickets.put(olderVersion, commit.getCommitterIdent());
+                                    while (m.find()) {
+                                        if (m.group(0).contains("@tckt")) {
+                                            System.out.println("FOUND TICKET;");
+                                            int ratio = FuzzyMatch.getRatio(m.group(0),
+                                                    ticketText, false);
+                                            System.out.println("FUZZY MATCH RATIO: " + ratio);
+                                            System.out.println("Between: \n" + ticketText);
+                                            System.out.println(m.group(0));
+                                            System.out.println("Ratio: " + ratio);
+                                            if (ratio > 70) {
+                                                if (ratio != 100) {
+                                                    Ticket olderVersion = new Ticket();
+                                                    olderVersion.buildIssue(m.group(0));
+                                                    olderVersionTickets.put(olderVersion, commit.getCommitterIdent());
+                                                    ticketText = m.group(0);
+                                                }
                                             }
                                         }
+                                        System.out.println("FOUND COMMENT: " + m.group(0));
                                     }
-                                    System.out.println("FOUND COMMENT: " + m.group(0));
-                                }
 
+                                }
                             }
                         }
                         oldTreeParser = newTreeParser;

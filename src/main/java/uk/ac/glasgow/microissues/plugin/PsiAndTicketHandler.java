@@ -169,11 +169,10 @@ public class PsiAndTicketHandler {
             public void propertyChanged(@NotNull PsiTreeChangeEvent event) {
                 System.out.println("Property changed!");
 
-                String newFileName = event.getNewValue().toString();
-                String oldFileName = event.getOldValue().toString();
-
                 if(event.getPropertyName().equals("fileName")){
-                    System.out.println("About to enter fileRenamed:");
+                    String newFileName = event.getNewValue().toString();
+                    String oldFileName = event.getOldValue().toString();
+
                     taskTree.fileRenamed(oldFileName, newFileName);
                 }
             }

@@ -21,7 +21,6 @@ public class Ticket {
     private PsiComment associatedComment; // The associated Psi Element (PsiComment).
     private String associatedFile; // The associated Java file name in which the ticket resides.
     private TicketHistory ticketHistory;
-    private boolean oldTicket = false;
 
     // REGEX for scanning the ticket for tags in the comment.
     private static final Pattern TAG_REGEX = Pattern.compile("@(.+?)\\s(.+?)\\n");
@@ -29,12 +28,6 @@ public class Ticket {
     // Default empty constructor
     public Ticket() {
         this.ticketHistory = new TicketHistory(this);
-    }
-
-    public Ticket(boolean oldTicket){
-        this.ticketHistory = new TicketHistory(this);
-        this.oldTicket = true;
-
     }
 
     public Ticket(String summary, String description, String type, PsiComment associatedComment){
@@ -108,7 +101,9 @@ public class Ticket {
         }
     }
 
-    public TicketHistory getTicketHistory(){ return ticketHistory; }
+    public TicketHistory getTicketHistory(){
+        return ticketHistory;
+    }
     public PsiComment getAssociatedComment() { return associatedComment; }
 
     public void setTicketHistory(TicketHistory ticketHistory) {
