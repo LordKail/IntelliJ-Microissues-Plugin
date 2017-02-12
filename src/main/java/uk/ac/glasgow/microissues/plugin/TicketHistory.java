@@ -125,7 +125,7 @@ public class TicketHistory {
                                             System.out.println("Ratio: " + ratio);
                                             if (ratio > 70) {
                                                 if (ratio != 100) {
-                                                    Ticket olderVersion = new Ticket();
+                                                    OldTicket olderVersion = new OldTicket(mainTicket, commit.getCommitterIdent());
                                                     olderVersion.buildIssue(m.group(0));
                                                     Ticket comparisonTicket = new Ticket();
                                                     comparisonTicket.buildIssue(ticketText);

@@ -14,10 +14,10 @@ import java.util.regex.Pattern;
  */
 public class Ticket {
 
-    private String summary; // Summary of the ticket.
-    private String description; // Description of the ticket
-    private String type; // The type of the ticket.
-    private int priority;
+    protected String summary; // Summary of the ticket.
+    protected String description; // Description of the ticket
+    protected String type; // The type of the ticket.
+    protected int priority;
     private PsiComment associatedComment; // The associated Psi Element (PsiComment).
     private String associatedFile; // The associated Java file name in which the ticket resides.
     private TicketHistory ticketHistory;
