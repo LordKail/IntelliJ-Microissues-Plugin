@@ -127,8 +127,15 @@ public class TicketHistory {
                                                 if (ratio != 100) {
                                                     Ticket olderVersion = new Ticket();
                                                     olderVersion.buildIssue(m.group(0));
-                                                    olderVersionTickets.put(olderVersion, commit.getCommitterIdent());
-                                                    ticketText = m.group(0);
+                                                    Ticket comparisonTicket = new Ticket();
+                                                    comparisonTicket.buildIssue(ticketText);
+                                                    System.out.println("Comparing summaries:");
+                                                    System.out.println(olderVersion.getSummary());
+                                                    System.out.println(comparisonTicket.getSummary());
+                                                    if(FuzzyMatch.getRatio(olderVersion.getSummary(), comparisonTicket.getSummary(), false) > 70) {
+                                                        olderVersionTickets.put(olderVersion, commit.getCommitterIdent());
+                                                        ticketText = m.group(0);
+                                                    }
                                                 }
                                             }
                                         }

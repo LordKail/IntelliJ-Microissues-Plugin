@@ -9,7 +9,7 @@ public class TicketHistoryTest {
 
     /*
     @tckt Ticket summary.
-    @type BUG.
+    @type TASK.
     @priority 9
     */
 
