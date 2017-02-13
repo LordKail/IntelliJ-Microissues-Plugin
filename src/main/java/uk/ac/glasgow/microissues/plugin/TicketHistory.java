@@ -52,6 +52,8 @@ public class TicketHistory {
             olderVersionTickets = new LinkedHashMap<>();
             //File gitFolder = new File("C:\\Users\\Al3x\\IdeaProjects\\Microissues" + "\\.git");
 
+            JOptionPane.showMessageDialog(null, "Please select the root folder of your application where the .git folder is inside.");
+
             //Create a file chooser
             final JFileChooser fc = new JFileChooser();
             fc.setFileHidingEnabled(false);

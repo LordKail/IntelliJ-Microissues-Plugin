@@ -26,9 +26,7 @@ public class Ticket {
     private static final Pattern TAG_REGEX = Pattern.compile("@(.+?)\\s(.+?)\\n");
 
     // Default empty constructor
-    public Ticket() {
-        this.ticketHistory = new TicketHistory(this);
-    }
+    public Ticket() {}
 
     public Ticket(String summary, String description, String type, PsiComment associatedComment){
         this.summary = summary;
@@ -104,10 +102,13 @@ public class Ticket {
     public TicketHistory getTicketHistory(){
         return ticketHistory;
     }
+
+
+
     public PsiComment getAssociatedComment() { return associatedComment; }
 
     public void setTicketHistory(TicketHistory ticketHistory) {
-        this.ticketHistory = new TicketHistory(this);
+        this.ticketHistory = ticketHistory;
     }
 
     public String toString(){

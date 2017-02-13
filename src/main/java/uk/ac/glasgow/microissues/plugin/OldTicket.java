@@ -13,7 +13,6 @@ public class OldTicket extends Ticket {
     public OldTicket(Ticket mostRecentVersionTicket, PersonIdent commitInfo){
         this.mostRecentVersion = mostRecentVersionTicket;
         this.commitInfo = commitInfo;
-
     }
 
 

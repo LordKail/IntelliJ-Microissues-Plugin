@@ -8,8 +8,8 @@ package uk.ac.glasgow.microissues.plugin;
 public class TicketHistoryTest {
 
     /*
-    @tckt Ticket summary.
-    @type BUG
+    @tckt Ticket summary changed.
+    @type BUG.
     @priority 9
     */
 
@@ -17,16 +17,5 @@ public class TicketHistoryTest {
     @tckt Summary here.
     @type TASK
     */
-
-    /*
-    @tckt New Ticket
-    @type Anything
-    @priority 5
-     */
-
-    /*
-    @tckt Use inner and outer classes for Ticket toString representation.
-     */
-
 
 }

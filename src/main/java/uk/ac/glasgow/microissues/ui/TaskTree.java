@@ -116,10 +116,10 @@ public class TaskTree {
         if(fileToNodes.get(fileName) != null) {
             for (DefaultMutableTreeNode node : fileToNodes.get(fileName)) {
                 System.out.println(((Ticket) node.getUserObject()).getSummary());
-                if(node.isLeaf()) {
-                    defaultModel.removeNodeFromParent(node);
-                    fileToNodes.get(fileName).remove(node);
-                }
+
+                defaultModel.removeNodeFromParent(node);
+                fileToNodes.get(fileName).remove(node);
+
             }
         }
     }
