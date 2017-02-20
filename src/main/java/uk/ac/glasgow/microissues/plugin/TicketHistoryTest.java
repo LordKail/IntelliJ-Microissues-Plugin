@@ -9,7 +9,7 @@ public class TicketHistoryTest {
 
     /*
     @tckt Ticket summary changed.
-    @type BUG.
+    @type TASK
     @priority 9
     */
 
@@ -17,5 +17,10 @@ public class TicketHistoryTest {
     @tckt Summary here.
     @type TASK
     */
+
+    /*
+    @tckt Summary and description.
+    @type BUG
+     */
 
 }

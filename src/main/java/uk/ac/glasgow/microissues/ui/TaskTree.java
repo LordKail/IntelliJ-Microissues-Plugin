@@ -1,5 +1,8 @@
 package uk.ac.glasgow.microissues.ui;
 
+import com.intellij.openapi.actionSystem.ActionGroup;
+import com.intellij.openapi.actionSystem.ActionManager;
+import com.intellij.openapi.actionSystem.ActionToolbar;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.wm.ToolWindow;
@@ -104,9 +107,22 @@ public class TaskTree {
         newJPanel.add(ticketInfoTab, BorderLayout.WEST);
         //microissuesContainer.add(new JBScrollPane(newJPanel));
 
-        microissuesContainer = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
-                new JBScrollPane(taskTree), new JBScrollPane(newJPanel));
-        ((JSplitPane) microissuesContainer).setResizeWeight(0.5);
+        JSplitPane treeAndInfoPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, new JBScrollPane(taskTree), new JBScrollPane(newJPanel));
+        treeAndInfoPanel.setResizeWeight(0.5);
+        microissuesContainer = new JPanel(new BorderLayout(1, 1));
+        //((JSplitPane) microissuesContainer).setResizeWeight(0.5);
+
+        microissuesContainer.add(treeAndInfoPanel, BorderLayout.CENTER);
+
+        ActionGroup actionGroup = (ActionGroup) ActionManager.getInstance().getAction("TasksAdditionalToolBarGroup");
+        ActionToolbar toolBar = ActionManager.getInstance().createActionToolbar("TasksAdditionalToolBarGroupPlace", actionGroup, false);
+
+        JPanel toolBarPanel = new JPanel(new BorderLayout(1, 1));
+        toolBarPanel.add(toolBar.getComponent(), BorderLayout.WEST);
+        toolBarPanel.setBorder(BorderFactory.createLineBorder(Color.black));
+
+        microissuesContainer.add(toolBarPanel, BorderLayout.WEST);
+
 
         window.getContentManager().addContent(ContentFactory.SERVICE.getInstance().createContent(microissuesContainer, "All issues", true));
     }
