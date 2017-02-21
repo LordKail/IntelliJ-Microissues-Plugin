@@ -1,11 +1,11 @@
 <idea-plugin version="2">
-  <id>com.your.company.unique.plugin.id</id>
-  <name>Plugin display name here</name>
+  <id>uk.ac.glasgow.microissues</id>
+  <name>Microissues</name>
   <version>1.0</version>
-  <vendor email="support@yourcompany.com" url="http://www.yourcompany.com">YourCompany</vendor>
+  <vendor email="" url="https://github.com/LordKail">LordKail</vendor>
 
   <description><![CDATA[
-      A plugin for embedding and viewing microissues in source code.<br>
+      A plugin for embedding and viewing tickets (microissues) in source code.<br>
 
     ]]></description>
 
@@ -26,18 +26,17 @@
 
   <extensions defaultExtensionNs="com.intellij">
     <!-- Add your extensions here -->
+    <postStartupActivity implementation="uk.ac.glasgow.microissues.ui.SetupToolWindow"></postStartupActivity>
   </extensions>
 
-  <project-components>
-    <component>
-      <implementation-class>uk.ac.glasgow.microissues.ui.SetupToolWindow</implementation-class>
-    </component>
-  </project-components>
-
   <actions>
-    <!-- Add your actions here -->
 
-    <group id="TasksAdditionalToolBarGroup">
+    <action id="Refresh_tasks" class="uk.ac.glasgow.microissues.actions.RefreshTasks" icon="/uk/ac/glasgow/microissues/icons/refresh.png"></action>
+    <action id="DisplayHelpDialog" class="uk.ac.glasgow.microissues.actions.HelpDisplayer" text="Display help dialog" description="Displays the help dialog to inform the user how to use the plugin" icon="/uk/ac/glasgow/microissues/icons/help.png"></action>
+    <!-- Add your actions here -->
+    <group id="TasksAdditionalToolBarGroup" class="com.intellij.openapi.actionSystem.DefaultActionGroup">
+      <reference ref="Refresh_tasks"/>
+      <reference ref="DisplayHelpDialog" />
     </group>
   </actions>
 
