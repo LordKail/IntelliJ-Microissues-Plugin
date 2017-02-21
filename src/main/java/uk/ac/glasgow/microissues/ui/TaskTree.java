@@ -12,6 +12,7 @@ import com.intellij.psi.PsiComment;
 import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.content.ContentFactory;
 import com.intellij.ui.treeStructure.Tree;
+import uk.ac.glasgow.microissues.plugin.OldTicket;
 import uk.ac.glasgow.microissues.plugin.Ticket;
 import uk.ac.glasgow.microissues.plugin.TreeMenuListener;
 
@@ -80,7 +81,14 @@ public class TaskTree {
                 }else{
                     DefaultMutableTreeNode selectedElement
                             = (DefaultMutableTreeNode) taskTree.getSelectionPath().getLastPathComponent();
-                    Ticket selectedTicket = (Ticket) selectedElement.getUserObject();
+                    Ticket selectedTicket;
+                    if(selectedElement.getUserObject() instanceof OldTicket){
+                        OldTicket.TicketLabel ticketLabel = (OldTicket.TicketLabel) selectedElement.getUserObject();
+                        selectedTicket = ticketLabel.getTicket();
+                    } else {
+                        Ticket.TicketLabel ticketLabel = (Ticket.TicketLabel) selectedElement.getUserObject();
+                        selectedTicket = ticketLabel.getTicket();
+                    }
                     System.out.println(selectedElement.getUserObject());
                     if(e.getClickCount() == 1){
                         ticketInfoTab.setText(selectedTicket.toPanelString());
@@ -110,7 +118,6 @@ public class TaskTree {
         JSplitPane treeAndInfoPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, new JBScrollPane(taskTree), new JBScrollPane(newJPanel));
         treeAndInfoPanel.setResizeWeight(0.5);
         microissuesContainer = new JPanel(new BorderLayout(1, 1));
-        //((JSplitPane) microissuesContainer).setResizeWeight(0.5);
 
         microissuesContainer.add(treeAndInfoPanel, BorderLayout.CENTER);
 
@@ -143,7 +150,7 @@ public class TaskTree {
     public void addTicket(Ticket newTicket, String fileName){
         DefaultTreeModel defaultModel = (DefaultTreeModel) taskTree.getModel();
         DefaultMutableTreeNode root = (DefaultMutableTreeNode) defaultModel.getRoot();
-        DefaultMutableTreeNode newNode = new DefaultMutableTreeNode(newTicket);
+        DefaultMutableTreeNode newNode = new DefaultMutableTreeNode(newTicket.new TicketLabel());
         root.add(newNode);
 
         fileToNodes.putIfAbsent(fileName, new CopyOnWriteArrayList<>());

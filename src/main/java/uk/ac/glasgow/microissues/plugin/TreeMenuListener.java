@@ -27,7 +27,7 @@ public class TreeMenuListener implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         // Was used for displaying information in the info window. Currently a proof of concept and might be removed.
         System.out.println("SELECTED:" + e.getActionCommand());
-        Ticket selectedTicket = (Ticket) selectedElement.getUserObject();
+        Ticket selectedTicket = ((Ticket.TicketLabel) selectedElement.getUserObject()).getTicket();
         System.out.println("Selected Ticket: " + selectedElement.getUserObject().toString());
         TicketHistory history = selectedTicket.getTicketHistory();
 
@@ -38,7 +38,7 @@ public class TreeMenuListener implements ActionListener {
         LinkedHashMap<Ticket, PersonIdent> mapOfPreviousTickets = history.retrieveTicketHistory();
 
         for(Ticket olderTicket : mapOfPreviousTickets.keySet()){
-            selectedElement.add(new DefaultMutableTreeNode(olderTicket));
+            selectedElement.add(new DefaultMutableTreeNode(olderTicket.new TicketLabel()));
         }
 
     }

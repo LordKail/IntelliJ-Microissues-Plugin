@@ -111,10 +111,6 @@ public class Ticket {
         this.ticketHistory = ticketHistory;
     }
 
-    public String toString(){
-        return summary;
-    }
-
     public String toPanelString() {
 
         StringBuilder sb = new StringBuilder();
@@ -138,5 +134,17 @@ public class Ticket {
         sb.append("</html>");
 
         return sb.toString();
+    }
+
+    public class TicketLabel {
+
+        public Ticket getTicket() {
+            return Ticket.this;
+        }
+
+        @Override
+        public String toString(){
+            return summary;
+        }
     }
 }

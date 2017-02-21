@@ -15,22 +15,6 @@ public class OldTicket extends Ticket {
         this.commitInfo = commitInfo;
     }
 
-
-    public String toString(){
-        int numOfDifferences = 0;
-
-        String difference = "Multiple changes";
-        if(!this.getSummary().equals(mostRecentVersion.getSummary())){
-            numOfDifferences += 1;
-            difference = "Change: Summary";
-        }
-        if(!this.getType().equals(mostRecentVersion.getType())){
-            numOfDifferences += 1;
-            difference = "Change: Type";
-        }
-        return (numOfDifferences == 1 ? difference : "Multiple Changes") + ", Committed on: " + commitInfo.getWhen();
-    }
-
     public String toPanelString(){
 
         StringBuilder sb = new StringBuilder();
@@ -59,6 +43,28 @@ public class OldTicket extends Ticket {
         sb.append("</html>");
 
         return sb.toString();
+    }
+
+    public class TicketLabel {
+
+        public OldTicket getTicket() {
+            return OldTicket.this;
+        }
+
+        public String toString(){
+            int numOfDifferences = 0;
+
+            String difference = "Multiple changes";
+            if(!getSummary().equals(mostRecentVersion.getSummary())){
+                numOfDifferences += 1;
+                difference = "Change: Summary";
+            }
+            if(!getType().equals(mostRecentVersion.getType())){
+                numOfDifferences += 1;
+                difference = "Change: Type";
+            }
+            return (numOfDifferences == 1 ? difference : "Multiple Changes") + ", Committed on: " + commitInfo.getWhen();
+        }
     }
 
 }
