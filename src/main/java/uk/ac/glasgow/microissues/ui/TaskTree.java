@@ -79,6 +79,8 @@ public class TaskTree {
                     popup.show(taskTree, e.getX(), e.getY());
 
                 }else{
+                    //ADD A NULL CHECK HERE.
+
                     DefaultMutableTreeNode selectedElement
                             = (DefaultMutableTreeNode) taskTree.getSelectionPath().getLastPathComponent();
                     Ticket selectedTicket;
@@ -138,7 +140,6 @@ public class TaskTree {
         DefaultTreeModel defaultModel = (DefaultTreeModel) taskTree.getModel();
         if(fileToNodes.get(fileName) != null) {
             for (DefaultMutableTreeNode node : fileToNodes.get(fileName)) {
-                System.out.println(((Ticket) node.getUserObject()).getSummary());
 
                 defaultModel.removeNodeFromParent(node);
                 fileToNodes.get(fileName).remove(node);

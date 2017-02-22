@@ -81,16 +81,13 @@ public class PsiAndTicketHandler {
             String commentText = elementToCheck.getText();
             if (commentText.startsWith("/*") && commentText.endsWith("*/")) {
                 if (commentText.contains("@tckt")) {
-                    PsiFile parent = null;
-                    if(event.getParent() instanceof PsiFile) {
-                        System.out.println("Class of parent: " + event.getParent().getClass().getName());
-                        parent = (PsiFile) event.getParent();
-                    }
-                    if(event.getParent().getParent() instanceof PsiFile) {
-                        System.out.println("Class of parent parent: " + event.getParent().getParent().getClass().getName());
-                        parent = (PsiFile) event.getParent().getParent();
+                    PsiElement possibleParent = event.getParent();
+
+                    while(!(possibleParent instanceof PsiFile)){
+                        possibleParent = possibleParent.getParent();
                     }
 
+                    PsiFile parent = (PsiFile) possibleParent;
                     taskTree.flushTicketsInFile(parent.getVirtualFile().getName());
                     scanPsiFile(parent, parent);
                 }

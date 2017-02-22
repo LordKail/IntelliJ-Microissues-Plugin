@@ -23,8 +23,9 @@ public class HelpDisplayer extends AnAction {
         sb.append("<p>The plugin scans all your comments for tickets and displays them in the ToolWindow.");
         sb.append("<p>The format of the tickets is as follows: </p>");
         sb.append("<p> /* </p>");
-        sb.append("<p>@tckt Ticket summary here [REQUIRED] \t</p>");
-        sb.append("<p>@type Ticket type here [OPTIONAL] \t</p>");
+        sb.append("<p>@tckt Ticket summary here [ANY TEXT] [REQUIRED] \t</p>");
+        sb.append("<p>@type Ticket type here [ANY TEXT] [OPTIONAL] \t</p>");
+        sb.append("<p>@priority Ticket priority here [INTEGER] [OPTIONAL] \t</p>");
         sb.append("<p>*/<p>");
         sb.append("<br><br>");
         sb.append("<p>Further information, with examples, are available on the GitHub page of the plugin:</p>");
