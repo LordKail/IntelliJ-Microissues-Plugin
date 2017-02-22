@@ -8,7 +8,8 @@ import com.intellij.openapi.project.Project;
 import javax.swing.*;
 
 /**
- * Created by 2090140l on 20/02/17.
+ * Class extending AnAction responsible for displaying helpful information relating to how to use the plugin and which
+ * tags related to ticket creation are available.
  */
 public class HelpDisplayer extends AnAction {
 
@@ -20,7 +21,7 @@ public class HelpDisplayer extends AnAction {
     public void displayHelpDialog(Project project){
         StringBuilder sb = new StringBuilder();
         sb.append("<html><h3> How to use the Microissues plugin</h3>");
-        sb.append("<p>The plugin scans all your comments for tickets and displays them in the ToolWindow.");
+        sb.append("<p>The plugin automatically scans all your comments for tickets and displays them in the ToolWindow.");
         sb.append("<p>The format of the tickets is as follows: </p>");
         sb.append("<p> /* </p>");
         sb.append("<p>@tckt Ticket summary here [ANY TEXT] [REQUIRED] \t</p>");

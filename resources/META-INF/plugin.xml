@@ -24,10 +24,17 @@
   <depends>com.intellij.modules.lang</depends>
   -->
 
+  <project-components>
+    <component>
+      <implementation-class>uk.ac.glasgow.microissues.ui.ToolWindowComponent</implementation-class>
+    </component>
+  </project-components>
+
   <extensions defaultExtensionNs="com.intellij">
     <!-- Add your extensions here -->
     <postStartupActivity implementation="uk.ac.glasgow.microissues.ui.SetupToolWindow"></postStartupActivity>
   </extensions>
+
 
   <actions>
 

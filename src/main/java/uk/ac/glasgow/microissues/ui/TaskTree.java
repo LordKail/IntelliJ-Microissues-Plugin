@@ -4,11 +4,9 @@ import com.intellij.openapi.actionSystem.ActionGroup;
 import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.ActionToolbar;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.psi.NavigatablePsiElement;
-import com.intellij.psi.PsiComment;
 import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.content.ContentFactory;
 import com.intellij.ui.treeStructure.Tree;
@@ -23,7 +21,6 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -33,16 +30,10 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public class TaskTree {
 
-    private ArrayList<VirtualFile> vFiles = new ArrayList<>();
-    private ArrayList<PsiComment> psiCommentList = new ArrayList<>();
-    private ArrayList<Ticket> ticketList = new ArrayList<>();
-    private ConcurrentHashMap<Ticket, DefaultMutableTreeNode> ticketToNode = new ConcurrentHashMap<>();
-    private ConcurrentHashMap<PsiComment, Ticket> commentToTicket = new ConcurrentHashMap<>();
     private JComponent microissuesContainer;
     private Tree taskTree;
     private Project project;
-    boolean unfinishedComment;
-    PsiComment unfinishedPsiComment;
+
 
     //Stuff relating to the tree.
     private ConcurrentHashMap<String, CopyOnWriteArrayList<DefaultMutableTreeNode>> fileToNodes;

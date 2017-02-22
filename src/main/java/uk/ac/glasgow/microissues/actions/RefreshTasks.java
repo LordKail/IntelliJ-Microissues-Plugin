@@ -4,15 +4,17 @@ import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.DataKeys;
 import com.intellij.openapi.project.Project;
+import uk.ac.glasgow.microissues.ui.ToolWindowComponent;
 
 /**
- * Created by 2090140l on 20/02/17.
+ * Class extending AnAction that is called to rescan all project files in case the user has noticed discrepancies between his entered tickets
+ * and the tickets displayed in the ToolWindow.
  */
 public class RefreshTasks extends AnAction {
 
     public void actionPerformed(AnActionEvent e) {
         Project project = DataKeys.PROJECT.getData(e.getDataContext());
-        // Code to reload the tasks for the project.
-        // Most likely calls the processFiles() from PsiAndTicketHandler.
+        ToolWindowComponent toolWindowComponent = project.getComponent(ToolWindowComponent.class);
+        toolWindowComponent.getPsiHandler().processProjectFiles();
     }
 }

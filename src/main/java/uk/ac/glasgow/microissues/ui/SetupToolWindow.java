@@ -1,16 +1,10 @@
 package uk.ac.glasgow.microissues.ui;
 
-import com.intellij.openapi.actionSystem.ActionGroup;
-import com.intellij.openapi.actionSystem.ActionManager;
-import com.intellij.openapi.actionSystem.ActionToolbar;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.startup.StartupActivity;
 import com.intellij.openapi.startup.StartupManager;
 import com.intellij.openapi.wm.ToolWindow;
-import com.intellij.openapi.wm.ToolWindowAnchor;
-import com.intellij.openapi.wm.ToolWindowManager;
-import com.intellij.ui.content.ContentFactory;
 import org.jetbrains.annotations.NotNull;
 import uk.ac.glasgow.microissues.plugin.PsiAndTicketHandler;
 
@@ -43,10 +37,11 @@ public class SetupToolWindow implements StartupActivity {
                                 new Runnable() {
                                     @Override
                                     public void run() {
-                                        toolWindow = ToolWindowManager.getInstance(project).registerToolWindow(toolwindowTitle, false, ToolWindowAnchor.BOTTOM);
-                                        TaskTree taskTree = new TaskTree(project);
+                                        ToolWindowComponent toolWindowComponent = project.getComponent(ToolWindowComponent.class);
+                                        TaskTree taskTree = toolWindowComponent.getTaskTree();
                                         PsiAndTicketHandler psiHandler = new PsiAndTicketHandler(taskTree, project);
                                         psiHandler.processProjectFiles();
+                                        toolWindowComponent.setPsiHandler(psiHandler);
                                     }
                                 }
                         );

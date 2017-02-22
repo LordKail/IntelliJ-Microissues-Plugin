@@ -4,8 +4,6 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ContentIterator;
 import com.intellij.openapi.roots.ProjectFileIndex;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.openapi.wm.ToolWindow;
-import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.psi.*;
 import org.jetbrains.annotations.NotNull;
 import uk.ac.glasgow.microissues.ui.TaskTree;
@@ -68,9 +66,6 @@ public class PsiAndTicketHandler {
         });
 
         addPsiListener();
-
-        ToolWindow window = ToolWindowManager.getInstance(project).getToolWindow("Microissues");
-        //buildTree(window);
     }
 
     public void elementAddedOrRemoved(PsiTreeChangeEvent event, PsiElement elementToCheck){
