@@ -70,7 +70,6 @@ public class PsiAndTicketHandler {
 
     public void elementAddedOrRemoved(PsiTreeChangeEvent event, PsiElement elementToCheck){
         if(elementToCheck instanceof PsiComment) {
-            System.out.println("The following child has been added: ");
             System.out.println(elementToCheck.getText());
 
             String commentText = elementToCheck.getText();
@@ -95,12 +94,14 @@ public class PsiAndTicketHandler {
 
             @Override
             public void childAdded(@NotNull PsiTreeChangeEvent event) {
+                System.out.println("Child added!");
                 elementAddedOrRemoved(event, event.getChild());
 
             }
 
             @Override
             public void childRemoved(@NotNull PsiTreeChangeEvent event) {
+                System.out.println("Child removed!");
                 elementAddedOrRemoved(event, event.getChild());
             }
 
@@ -125,7 +126,8 @@ public class PsiAndTicketHandler {
                     elementAddedOrRemoved(event, event.getNewChild());
                 }
                 */
-
+                System.out.println("Child replaced!");
+                elementAddedOrRemoved(event, event.getOldChild());
                 elementAddedOrRemoved(event, event.getNewChild());
             }
 
@@ -150,6 +152,12 @@ public class PsiAndTicketHandler {
             @Override
             public void childrenChanged(@NotNull PsiTreeChangeEvent event) {
                 System.out.println("Children changed!");
+                PsiElement parent = event.getParent();
+                if(parent instanceof PsiFile){
+                    PsiFile psiFile = (PsiFile) parent;
+                    taskTree.flushTicketsInFile(psiFile.getVirtualFile().getName());
+                    scanPsiFile(psiFile, psiFile);
+                }
             }
 
             @Override
