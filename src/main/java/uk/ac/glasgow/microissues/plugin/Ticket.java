@@ -1,6 +1,7 @@
 package uk.ac.glasgow.microissues.plugin;
 
 import com.intellij.psi.PsiComment;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.NotNull;
 
@@ -28,24 +29,33 @@ public class Ticket {
     // Default empty constructor
     public Ticket() {}
 
-    public Ticket(String summary, String description, String type, PsiComment associatedComment){
-        this.summary = summary;
-        this.description = description;
-        this.type = type;
-        this.ticketHistory = new TicketHistory(this);
-        this.associatedComment = associatedComment;
-    }
-
-    // The builder method for the ticket.
+    /**
+     * The method for building the ticket using a PsiComment instance, which contains
+     * the text of the comment. The associated PsiComment and the filename in which
+     * it resides are recorded for ticket management purposes.
+     * @param comment
+     */
     public void buildIssue(PsiComment comment) {
         this.associatedComment = comment;
 
-        //PsiFile psifile = (PsiFile) comment.getParent().getParent();
-        //this.associatedFile = psifile.getName();
+        PsiElement possiblePsiFile = associatedComment.getParent();
+        while(!(possiblePsiFile instanceof PsiFile)){
+            possiblePsiFile = possiblePsiFile.getParent();
+        }
+
+        PsiFile psiFile = (PsiFile) possiblePsiFile;
+        this.associatedFile = psiFile.getName();
 
         String commentString = comment.getText();
         buildIssue(commentString);
     }
+
+    /**
+     * The method for building the ticket from a comment string. The comment string
+     * is checked via regex whether it is in fact intended to be a comment and
+     * according to all the tags written in the comment, ticket details are recorded.
+     * @param commentString
+     */
 
     public void buildIssue(String commentString){
 
@@ -54,7 +64,6 @@ public class Ticket {
         if (tagMap.containsKey("tckt")) {
             this.summary = tagMap.get("tckt");
             this.type = tagMap.get("type");
-            this.description = "";
 
             if(tagMap.get("priority") != null) {
                 try {
@@ -66,11 +75,21 @@ public class Ticket {
             String lines[] = commentString.split("\\r?\\n");
             for (String line : lines){
                 if(!line.contains("@") && !line.contains("/*") && !line.contains("*/")){
+                    if(description == null){
+                        description = "";
+                    }
                     this.description += line.replace("*", "");
                 }
             }
         }
     }
+
+    /**
+     * Uses the defined regex to match lines for tags, which are of the format
+     * {@literal}<Tag> <Information>
+     * @param commentString
+     * @return A {Tag [String] : Information[String]} hashmap is returned.
+     */
 
     @NotNull
     private HashMap<String, String> getTagMap(String commentString) {
@@ -83,33 +102,34 @@ public class Ticket {
         return tagMap;
     }
 
+    /**
+     * Getters and setters
+     */
+
+    public void setSummary(String summary){
+        this.summary = summary;
+    }
     public String getSummary() {
         return summary;
     }
     public String getType() { return type; }
+    public int getPriority() { return priority; }
 
     public String getAssociatedFile(){
-        if (associatedFile != null){
-            return associatedFile;
-        }
-        else{
-            PsiFile psiFile = (PsiFile) associatedComment.getParent().getParent();
-            this.associatedFile = psiFile.getName();
-            return associatedFile;
-        }
+        return associatedFile;
     }
 
     public TicketHistory getTicketHistory(){
         return ticketHistory;
     }
 
-
-
     public PsiComment getAssociatedComment() { return associatedComment; }
 
-    public void setTicketHistory(TicketHistory ticketHistory) {
-        this.ticketHistory = ticketHistory;
-    }
+    /**
+     * Method to generate the html string to be displayed in the ticket
+     * information panel.
+     * @return
+     */
 
     public String toPanelString() {
 
@@ -127,7 +147,7 @@ public class Ticket {
             }
         }
 
-        if(!description.equals("")) {
+        if(!(description == null)) {
             sb.append("<p>Description: " + description + "</p>");
         }
 
@@ -135,6 +155,12 @@ public class Ticket {
 
         return sb.toString();
     }
+
+    /**
+     * TicketLabel class which overrides toString - used as the object
+     * to be passed to the JTree, which will use the toString to display
+     * the summary of the ticket as the node.
+     */
 
     public class TicketLabel {
 
