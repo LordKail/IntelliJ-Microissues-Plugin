@@ -38,7 +38,7 @@ public class TreeMenuListener implements ActionListener {
         LinkedHashMap<Ticket, PersonIdent> mapOfPreviousTickets = history.retrieveTicketHistory();
 
         for(Ticket olderTicket : mapOfPreviousTickets.keySet()){
-            selectedElement.add(new DefaultMutableTreeNode(olderTicket.new TicketLabel()));
+            selectedElement.add(new DefaultMutableTreeNode((olderTicket.new TicketLabel())));
         }
 
     }

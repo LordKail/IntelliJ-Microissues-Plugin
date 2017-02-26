@@ -2,8 +2,6 @@ package uk.ac.glasgow.microissues.actions;
 
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.actionSystem.DataKeys;
-import com.intellij.openapi.project.Project;
 
 import javax.swing.*;
 import javax.swing.event.HyperlinkEvent;
@@ -17,11 +15,10 @@ import java.awt.*;
 public class HelpDisplayer extends AnAction {
 
     public void actionPerformed(AnActionEvent e) {
-        Project project = DataKeys.PROJECT.getData(e.getDataContext());
-        displayHelpDialog(project);
+        displayHelpDialog();
     }
 
-    public void displayHelpDialog(Project project){
+    public void displayHelpDialog(){
         StringBuilder sb = new StringBuilder();
         sb.append("<html><h3> How to use the Microissues plugin</h3>");
         sb.append("<p>The plugin automatically scans all your comments for tickets and displays them in the ToolWindow.");
@@ -47,7 +44,6 @@ public class HelpDisplayer extends AnAction {
             public void hyperlinkUpdate(HyperlinkEvent e)
             {
                 if (e.getEventType().equals(HyperlinkEvent.EventType.ACTIVATED))
-                    //ProcessHandler.launchUrl(e.getURL().toString()); // roll your own link launcher or use Desktop if J6+
                     try
                     {
                         Desktop.getDesktop().browse(e.getURL().toURI());

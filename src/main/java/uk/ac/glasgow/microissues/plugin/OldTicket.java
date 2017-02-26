@@ -22,22 +22,46 @@ public class OldTicket extends Ticket {
         sb.append("<p>Committer: " + commitInfo.getName() + "</p>");
         sb.append("<p>Commit date: " + commitInfo.getWhen() + "</p>");
 
-        sb.append("<h4>Ticket Changes: </h4>");
+        sb.append("<h4>This old ticket's properties: </h4>");
+
+        String changed;
+
+        if(!summary.equals(mostRecentVersion.summary)) {
+            changed = "<b>[CHANGED]</b>";
+        } else {
+            changed = "";
+        }
 
         sb.append("<p>Summary: " + summary + "</p>");
+
         if(type != null) {
-            sb.append("<p>Type: " + type + "</p>");
+            if(!type.equals(mostRecentVersion.type)) {
+                changed = "<b>[CHANGED]</b>";
+            } else {
+                changed = "";
+            }
+            sb.append("<p>Type: " + type + " " + changed + "</p>");
         }
         if(priority != 0) {
             if(priority == -1){
                 sb.append("<p> Priority: Please use an integer value for the priority </p>");
             } else {
-                sb.append("<p>Priority: " + priority + "</p>");
+                if(priority != mostRecentVersion.priority) {
+                    changed = "<b>[CHANGED]</b>";
+                } else {
+                    changed = "";
+                }
+                sb.append("<p>Priority: " + priority + " " + changed + "</p>");
             }
         }
 
-        if(!description.equals("")) {
-            sb.append("<p>Description: " + description + "</p>");
+        if(!(description == null)) {
+            if(!description.equals(mostRecentVersion.description)) {
+                changed = "<b>[CHANGED]</b>";
+            } else {
+                changed = "";
+            }
+            sb.append("<p>Description: " + description + " " + changed + "</p>");
         }
 
         sb.append("</html>");
