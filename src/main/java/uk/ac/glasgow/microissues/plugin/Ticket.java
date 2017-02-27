@@ -109,21 +109,20 @@ public class Ticket {
     public void setSummary(String summary){
         this.summary = summary;
     }
+
     public String getSummary() {
         return summary;
     }
     public String getType() { return type; }
     public int getPriority() { return priority; }
-
     public String getAssociatedFile(){
         return associatedFile;
     }
-
     public TicketHistory getTicketHistory(){
         return ticketHistory;
     }
-
     public PsiComment getAssociatedComment() { return associatedComment; }
+    public String getDescription() { return description; }
 
     /**
      * Method to generate the html string to be displayed in the ticket
@@ -155,6 +154,7 @@ public class Ticket {
 
         return sb.toString();
     }
+
 
     /**
      * TicketLabel class which overrides toString - used as the object
