@@ -35,13 +35,13 @@ import java.util.regex.Pattern;
 public class TicketHistory {
 
     private Ticket mainTicket;
-    LinkedHashMap<Ticket, PersonIdent> olderVersionTickets;
+    LinkedHashMap<OldTicket, PersonIdent> olderVersionTickets;
 
     public TicketHistory(Ticket ticket){
         this.mainTicket = ticket;
     }
 
-    public LinkedHashMap<Ticket, PersonIdent> retrieveTicketHistory() {
+    public LinkedHashMap<OldTicket, PersonIdent> retrieveTicketHistory() {
         String ticketText = mainTicket.getAssociatedComment().getText();
         if(olderVersionTickets != null){
             System.out.println("OlderVersions is not null!");

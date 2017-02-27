@@ -1,7 +1,5 @@
 package uk.ac.glasgow.microissues.plugin;
 
-import com.intellij.openapi.wm.ToolWindow;
-import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.lib.PersonIdent;
 
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -10,19 +8,25 @@ import java.awt.event.ActionListener;
 import java.util.LinkedHashMap;
 
 /**
- * Created by Al3x on 27/11/2016.
+ * The listener for the menu when right clicking on a node in the task tree
+ * (The JTree in the ToolWindow). Used mainly for Checking the ticket history option.
  */
-public class TreeMenuListener implements ActionListener {
-    Git git;
-    ToolWindow window;
-    DefaultMutableTreeNode selectedElement;
-    TicketHistory tcktHistory;
 
-    public TreeMenuListener(ToolWindow window, DefaultMutableTreeNode selectedElement) {
-        this.window = window;
+public class TreeMenuListener implements ActionListener {
+
+    private DefaultMutableTreeNode selectedElement;
+
+    // The constructor for the listener.
+    public TreeMenuListener(DefaultMutableTreeNode selectedElement) {
         this.selectedElement = selectedElement;
     }
 
+
+    /**
+     * Called when an option is selected from the popup menu. Retrieves the ticket history and adds each found older ticket
+     * to the JTree as the main ticket's child.
+     * @param e
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
         // Was used for displaying information in the info window. Currently a proof of concept and might be removed.
@@ -30,14 +34,13 @@ public class TreeMenuListener implements ActionListener {
         Ticket selectedTicket = ((Ticket.TicketLabel) selectedElement.getUserObject()).getTicket();
         System.out.println("Selected Ticket: " + selectedElement.getUserObject().toString());
         TicketHistory history = selectedTicket.getTicketHistory();
-
         if(history == null){
             history = new TicketHistory(selectedTicket);
         }
 
-        LinkedHashMap<Ticket, PersonIdent> mapOfPreviousTickets = history.retrieveTicketHistory();
+        LinkedHashMap<OldTicket, PersonIdent> mapOfPreviousTickets = history.retrieveTicketHistory();
 
-        for(Ticket olderTicket : mapOfPreviousTickets.keySet()){
+        for(OldTicket olderTicket : mapOfPreviousTickets.keySet()){
             selectedElement.add(new DefaultMutableTreeNode((olderTicket.new TicketLabel())));
         }
 

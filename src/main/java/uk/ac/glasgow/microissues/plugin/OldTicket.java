@@ -77,6 +77,11 @@ public class OldTicket extends Ticket {
         return sb.toString();
     }
 
+
+    /**
+     * TicketLabel inner class, used for passing to the JTree (where tasks are stored) in order to display
+     * appropriate information as the node labels.
+     */
     public class TicketLabel {
 
         public OldTicket getTicket() {
@@ -87,13 +92,17 @@ public class OldTicket extends Ticket {
             int numOfDifferences = 0;
 
             String difference = "Multiple changes";
-            if(!getSummary().equals(mostRecentVersion.getSummary())){
-                numOfDifferences += 1;
-                difference = "Change: Summary";
+            if(summary != null) {
+                if (!getSummary().equals(mostRecentVersion.getSummary())) {
+                    numOfDifferences += 1;
+                    difference = "Change: Summary";
+                }
             }
-            if(!getType().equals(mostRecentVersion.getType())){
-                numOfDifferences += 1;
-                difference = "Change: Type";
+            if(type != null) {
+                if (!getType().equals(mostRecentVersion.getType())) {
+                    numOfDifferences += 1;
+                    difference = "Change: Type";
+                }
             }
             return (numOfDifferences == 1 ? difference : "Multiple Changes") + ", Committed on: " + commitInfo.getWhen();
         }

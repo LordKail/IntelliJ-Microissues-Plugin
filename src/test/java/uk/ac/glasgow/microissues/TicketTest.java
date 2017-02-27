@@ -82,11 +82,6 @@ public class TicketTest extends EasyMockSupport {
     }
 
     @Test
-    public void testGetAssociatedFile_associatedFileNull(){
-
-    }
-
-    @Test
     public void testToPanelString_everythingExceptSummaryNull(){
         ticket.setSummary("Sample summary 4");
         StringBuilder sb = new StringBuilder();

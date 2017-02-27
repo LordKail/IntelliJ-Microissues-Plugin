@@ -65,7 +65,7 @@ public class TaskTree {
                             = (DefaultMutableTreeNode) taskTree.getSelectionPath().getLastPathComponent();
                     JPopupMenu popup = new JPopupMenu();
                     JMenuItem viewInfo= new JMenuItem("View ticket history");
-                    viewInfo.addActionListener(new TreeMenuListener(window, selectedElement));
+                    viewInfo.addActionListener(new TreeMenuListener(selectedElement));
                     popup.add(viewInfo);
                     popup.show(taskTree, e.getX(), e.getY());
 
@@ -75,7 +75,7 @@ public class TaskTree {
                     DefaultMutableTreeNode selectedElement
                             = (DefaultMutableTreeNode) taskTree.getSelectionPath().getLastPathComponent();
                     Ticket selectedTicket;
-                    if(selectedElement.getUserObject() instanceof OldTicket){
+                    if(selectedElement.getUserObject() instanceof OldTicket.TicketLabel){
                         OldTicket.TicketLabel ticketLabel = (OldTicket.TicketLabel) selectedElement.getUserObject();
                         selectedTicket = ticketLabel.getTicket();
                     } else {

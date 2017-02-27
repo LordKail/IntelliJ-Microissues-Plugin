@@ -109,6 +109,8 @@ public class Ticket {
     public void setSummary(String summary){
         this.summary = summary;
     }
+    public void setType(String type) { this.type = type; }
+
 
     public String getSummary() {
         return summary;
@@ -154,7 +156,6 @@ public class Ticket {
 
         return sb.toString();
     }
-
 
     /**
      * TicketLabel class which overrides toString - used as the object
