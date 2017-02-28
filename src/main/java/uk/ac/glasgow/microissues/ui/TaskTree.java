@@ -34,8 +34,6 @@ public class TaskTree {
     private Tree taskTree;
     private Project project;
 
-
-    //Stuff relating to the tree.
     private ConcurrentHashMap<String, CopyOnWriteArrayList<DefaultMutableTreeNode>> fileToNodes;
 
     public TaskTree(Project project) {
@@ -44,6 +42,10 @@ public class TaskTree {
         initializeTree();
     }
 
+    /**
+     * Creates the tree to be used within the ToolWindow. The Tree has a mouselistener that checks the nodes
+     * selected.
+     */
     private void initializeTree() {
 
         ToolWindow window = ToolWindowManager.getInstance(project).getToolWindow("Microissues");
@@ -57,48 +59,41 @@ public class TaskTree {
 
         MouseListener ml = new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
-
-                System.out.println("MOUSE CLICKED");
                 if (SwingUtilities.isRightMouseButton(e)) {
-                    System.out.println("RIGHT MOUSE CLICKED");
                     DefaultMutableTreeNode selectedElement
                             = (DefaultMutableTreeNode) taskTree.getSelectionPath().getLastPathComponent();
                     JPopupMenu popup = new JPopupMenu();
-                    JMenuItem viewInfo= new JMenuItem("View ticket history");
+                    JMenuItem viewInfo = new JMenuItem("View ticket history");
                     viewInfo.addActionListener(new TreeMenuListener(selectedElement));
                     popup.add(viewInfo);
                     popup.show(taskTree, e.getX(), e.getY());
 
                 }else{
-                    //ADD A NULL CHECK HERE.
-
-                    DefaultMutableTreeNode selectedElement
-                            = (DefaultMutableTreeNode) taskTree.getSelectionPath().getLastPathComponent();
-                    Ticket selectedTicket;
-                    if(selectedElement.getUserObject() instanceof OldTicket.TicketLabel){
-                        OldTicket.TicketLabel ticketLabel = (OldTicket.TicketLabel) selectedElement.getUserObject();
-                        selectedTicket = ticketLabel.getTicket();
-                    } else {
-                        Ticket.TicketLabel ticketLabel = (Ticket.TicketLabel) selectedElement.getUserObject();
-                        selectedTicket = ticketLabel.getTicket();
-                    }
-                    System.out.println(selectedElement.getUserObject());
-                    if(e.getClickCount() == 1){
-                        ticketInfoTab.setText(selectedTicket.toPanelString());
-                    } else {
-                        System.out.println("First child of PsiComment: ");
-                        NavigatablePsiElement navigatable = (NavigatablePsiElement) selectedTicket.getAssociatedComment().getParent();
-                        navigatable.navigate(true);
+                    if(taskTree.getSelectionPath() != null){
+                        DefaultMutableTreeNode selectedElement
+                                = (DefaultMutableTreeNode) taskTree.getSelectionPath().getLastPathComponent();
+                        Ticket selectedTicket;
+                        if(selectedElement.getUserObject() instanceof OldTicket.TicketLabel){
+                            OldTicket.TicketLabel ticketLabel = (OldTicket.TicketLabel) selectedElement.getUserObject();
+                            selectedTicket = ticketLabel.getTicket();
+                        } else {
+                            Ticket.TicketLabel ticketLabel = (Ticket.TicketLabel) selectedElement.getUserObject();
+                            selectedTicket = ticketLabel.getTicket();
+                        }
+                        if(e.getClickCount() == 1){
+                            ticketInfoTab.setText(selectedTicket.toPanelString());
+                        } else {
+                            NavigatablePsiElement navigatable = (NavigatablePsiElement) selectedTicket.getAssociatedComment().getParent();
+                            navigatable.navigate(true);
+                        }
                     }
                 }
-
             }
         };
 
         taskTree.addMouseListener(ml);
         taskTree.setToggleClickCount(0);
 
-        //microissuesContainer.add(new JBScrollPane(taskTree), BorderLayout.WEST);
 
         // Adding an information window for the ticket
         JPanel newJPanel = new JPanel();
@@ -106,12 +101,11 @@ public class TaskTree {
         layout.setVgap(0);
         layout.setAlignment(FlowLayout.LEFT);
         newJPanel.add(ticketInfoTab, BorderLayout.WEST);
-        //microissuesContainer.add(new JBScrollPane(newJPanel));
 
         JSplitPane treeAndInfoPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, new JBScrollPane(taskTree), new JBScrollPane(newJPanel));
         treeAndInfoPanel.setResizeWeight(0.5);
-        microissuesContainer = new JPanel(new BorderLayout(1, 1));
 
+        microissuesContainer = new JPanel(new BorderLayout(1, 1));
         microissuesContainer.add(treeAndInfoPanel, BorderLayout.CENTER);
 
         ActionGroup actionGroup = (ActionGroup) ActionManager.getInstance().getAction("TasksAdditionalToolBarGroup");
@@ -123,15 +117,18 @@ public class TaskTree {
 
         microissuesContainer.add(toolBarPanel, BorderLayout.WEST);
 
-
         window.getContentManager().addContent(ContentFactory.SERVICE.getInstance().createContent(microissuesContainer, "All issues", true));
     }
 
+
+    /**
+     * Deletes all the tickets from the tasktree that belong to the specified filename.
+     * @param fileName Used for deleting the tickets belonging to the file.
+     */
     public void flushTicketsInFile(String fileName){
         DefaultTreeModel defaultModel = (DefaultTreeModel) taskTree.getModel();
         if(fileToNodes.get(fileName) != null) {
             for (DefaultMutableTreeNode node : fileToNodes.get(fileName)) {
-
                 defaultModel.removeNodeFromParent(node);
                 fileToNodes.get(fileName).remove(node);
 
@@ -139,6 +136,13 @@ public class TaskTree {
         }
     }
 
+
+    /**
+     * Method for adding a new ticket to the task tree - used to create the TicketLabel and also tie the filename to the
+     * ticket.
+     * @param newTicket The ticket to be added to the tree.
+     * @param fileName The filename to which to tie the ticket.
+     */
     public void addTicket(Ticket newTicket, String fileName){
         DefaultTreeModel defaultModel = (DefaultTreeModel) taskTree.getModel();
         DefaultMutableTreeNode root = (DefaultMutableTreeNode) defaultModel.getRoot();
@@ -152,6 +156,14 @@ public class TaskTree {
         defaultModel.reload();
     }
 
+
+    /**
+     * Method for handling the case when a file has been renamed.
+     * Replaces the filename in the hashmap in order to register the nodes corresponding to the old filename
+     * to the new filename.
+     * @param oldFileName The previous filename.
+     * @param newFileName The new filename that the old one was renamed to.
+     */
     public void fileRenamed(String oldFileName, String newFileName){
         if(fileToNodes.containsKey(oldFileName) && !fileToNodes.containsKey(newFileName)){
             fileToNodes.put(newFileName, fileToNodes.remove(oldFileName));
