@@ -34,8 +34,10 @@ import java.util.regex.Pattern;
 
 public class TicketHistory {
 
+
     private Ticket mainTicket;
-    LinkedHashMap<OldTicket, PersonIdent> olderVersionTickets;
+
+    private LinkedHashMap<OldTicket, PersonIdent> olderVersionTickets;
 
     public TicketHistory(Ticket ticket){
         this.mainTicket = ticket;
@@ -44,18 +46,16 @@ public class TicketHistory {
     public LinkedHashMap<OldTicket, PersonIdent> retrieveTicketHistory() {
         String ticketText = mainTicket.getAssociatedComment().getText();
         if(olderVersionTickets != null){
-            System.out.println("OlderVersions is not null!");
             return olderVersionTickets;
         }
         else {
             System.out.println("OlderVersions is null, creating a list.");
             olderVersionTickets = new LinkedHashMap<>();
-            //File gitFolder = new File("C:\\Users\\Al3x\\IdeaProjects\\Microissues" + "\\.git");
 
             JOptionPane.showMessageDialog(null, "Please select the root folder of your application where the .git folder is inside.");
 
-            //Create a file chooser
-            final JFileChooser fc = new JFileChooser();
+            // Create a file chooser
+            JFileChooser fc = new JFileChooser();
             fc.setFileHidingEnabled(false);
             fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 
@@ -182,5 +182,10 @@ public class TicketHistory {
 
         return null;
     }
+
+    public void setOlderVersionTickets(LinkedHashMap<OldTicket, PersonIdent> olderVersionTickets) {
+        this.olderVersionTickets = olderVersionTickets;
+    }
+
 
 }

@@ -4,7 +4,6 @@ import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.startup.StartupActivity;
 import com.intellij.openapi.startup.StartupManager;
-import com.intellij.openapi.wm.ToolWindow;
 import org.jetbrains.annotations.NotNull;
 import uk.ac.glasgow.microissues.plugin.PsiAndTicketHandler;
 
@@ -15,13 +14,9 @@ import java.awt.*;
 public class SetupToolWindow implements StartupActivity {
 
     private JComponent microissuesContainer;
-    private String toolwindowTitle = "Microissues";
-    private ToolWindow toolWindow;
-    private Project project;
 
     @Override
     public void runActivity(@NotNull Project project) {
-        this.project = project;
 
         microissuesContainer = new JPanel(new BorderLayout(1, 1));
         microissuesContainer.setBorder(null);

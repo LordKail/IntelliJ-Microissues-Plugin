@@ -16,6 +16,8 @@ import static org.easymock.EasyMock.replay;
 
 public class TicketTest extends EasyMockSupport {
 
+    private Ticket ticket;
+
     @Rule
     public EasyMockRule rule = new EasyMockRule(this);
 
@@ -24,8 +26,6 @@ public class TicketTest extends EasyMockSupport {
 
     @Mock
     private PsiFile psiFile;
-
-    private Ticket ticket;
 
     @Before
     public void setUp() throws Exception {

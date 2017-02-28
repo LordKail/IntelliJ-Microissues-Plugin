@@ -8,39 +8,34 @@ import com.intellij.psi.*;
 import org.jetbrains.annotations.NotNull;
 import uk.ac.glasgow.microissues.ui.TaskTree;
 
-import java.util.ArrayList;
-import java.util.concurrent.ConcurrentHashMap;
-
 /**
- * Created by 2090140l on 03/02/17.
+ * The class handling the PsiElements (PsiComments) and correspondingly updating the task tree.
  */
 public class PsiAndTicketHandler {
 
     private TaskTree taskTree;
     private Project project;
-    private ConcurrentHashMap<String, ArrayList<PsiComment>> fileToComments;
 
     public PsiAndTicketHandler(TaskTree taskTree, Project project){
         this.taskTree = taskTree;
         this.project = project;
-        fileToComments = new ConcurrentHashMap();
     }
 
-
+    /**
+     * Recursive function for scanning the psiFile for comments.
+     * @param element the element to be checked if it is an instance of PsiComment (and if so, whether it is also a ticket).
+     * @param root The root psiFile (used for extracting the filename)
+     */
     public void scanPsiFile(PsiElement element, PsiFile root){
         if(element instanceof PsiComment){
             if(element.getText().contains("@tckt")){
                 String fileName = root.getVirtualFile().getName();
-                fileToComments.putIfAbsent(fileName, new ArrayList<>());
-                fileToComments.get(fileName).add((PsiComment) element);
 
                 Ticket newTicket = new Ticket();
                 newTicket.buildIssue((PsiComment) element);
 
                 taskTree.addTicket(newTicket, fileName);
 
-                System.out.println(fileName);
-                System.out.println("Size of ArrayList: " + fileToComments.get(fileName).size());
             }
 
         } else {
@@ -50,7 +45,11 @@ public class PsiAndTicketHandler {
         }
     }
 
-
+    /**
+     * The first method that is called upon launching the plugin at IDE startup.
+     * The method for scanning the whole project for java files and then using scanPsiFile method for checking the files
+     * for comments.
+     */
     public void processProjectFiles() {
         ProjectFileIndex.SERVICE.getInstance(project).iterateContent(new ContentIterator() {
             @Override
@@ -68,6 +67,13 @@ public class PsiAndTicketHandler {
         addPsiListener();
     }
 
+
+    /**
+     * The method that is responsible for checking if the replaced,added or removed element is a comment containing a
+     * ticket. If so, flushTicketsInFile and scanPsiFile methods are called to
+     * @param event The event that triggered the change, carries the corresponding psiElement with it.
+     * @param elementToCheck The element extracted from the event change, checked whether it is a ticket-containing comment.
+     */
     public void elementAddedOrRemoved(PsiTreeChangeEvent event, PsiElement elementToCheck){
         if(elementToCheck instanceof PsiComment) {
             System.out.println(elementToCheck.getText());
@@ -89,46 +95,49 @@ public class PsiAndTicketHandler {
         }
     }
 
+
+    /**
+     * The listener for PsiElement changes in the code. Is responsible for keeping track whenever PsiElements are added,
+     * deleted, replaced or if their property has been changed.
+     */
     public void addPsiListener(){
         PsiManager.getInstance(project).addPsiTreeChangeListener(new PsiTreeChangeListener() {
 
             @Override
             public void childAdded(@NotNull PsiTreeChangeEvent event) {
-                System.out.println("Child added!");
                 elementAddedOrRemoved(event, event.getChild());
 
             }
 
             @Override
             public void childRemoved(@NotNull PsiTreeChangeEvent event) {
-                System.out.println("Child removed!");
                 elementAddedOrRemoved(event, event.getChild());
             }
 
             @Override
             public void childReplaced(@NotNull PsiTreeChangeEvent event) {
-
-                /*
-                String newChildText = event.getNewChild().getText();
-                String oldChildText = event.getOldChild().getText();
-
-                System.out.println("Old Child: " + oldChildText);
-                System.out.println("New Child: " + newChildText);
-
-                if(newChildText.startsWith("file://") && newChildText.endsWith(".java")){
-                    String oldFileName = oldChildText.substring(oldChildText.lastIndexOf('/') + 1);
-                    String newFileName = newChildText.substring(newChildText.lastIndexOf('/') + 1);
-
-                    System.out.println("About to enter fileRenamed:");
-                    taskTree.fileRenamed(oldFileName, newFileName);
-                }
-                else {
-                    elementAddedOrRemoved(event, event.getNewChild());
-                }
-                */
-                System.out.println("Child replaced!");
                 elementAddedOrRemoved(event, event.getOldChild());
                 elementAddedOrRemoved(event, event.getNewChild());
+            }
+
+            @Override
+            public void childrenChanged(@NotNull PsiTreeChangeEvent event) {
+                PsiElement parent = event.getParent();
+                if(parent instanceof PsiFile){
+                    PsiFile psiFile = (PsiFile) parent;
+                    taskTree.flushTicketsInFile(psiFile.getVirtualFile().getName());
+                    scanPsiFile(psiFile, psiFile);
+                }
+            }
+
+            @Override
+            public void propertyChanged(@NotNull PsiTreeChangeEvent event) {
+                if(event.getPropertyName().equals("fileName")){
+                    String newFileName = event.getNewValue().toString();
+                    String oldFileName = event.getOldValue().toString();
+
+                    taskTree.fileRenamed(oldFileName, newFileName);
+                }
             }
 
             @Override
@@ -150,32 +159,8 @@ public class PsiAndTicketHandler {
             public void beforePropertyChange(@NotNull PsiTreeChangeEvent event) {}
 
             @Override
-            public void childrenChanged(@NotNull PsiTreeChangeEvent event) {
-                System.out.println("Children changed!");
-                PsiElement parent = event.getParent();
-                if(parent instanceof PsiFile){
-                    PsiFile psiFile = (PsiFile) parent;
-                    taskTree.flushTicketsInFile(psiFile.getVirtualFile().getName());
-                    scanPsiFile(psiFile, psiFile);
-                }
-            }
+            public void childMoved(@NotNull PsiTreeChangeEvent event) {}
 
-            @Override
-            public void childMoved(@NotNull PsiTreeChangeEvent event) {
-                System.out.println("Children moved!");
-            }
-
-            @Override
-            public void propertyChanged(@NotNull PsiTreeChangeEvent event) {
-                System.out.println("Property changed!");
-
-                if(event.getPropertyName().equals("fileName")){
-                    String newFileName = event.getNewValue().toString();
-                    String oldFileName = event.getOldValue().toString();
-
-                    taskTree.fileRenamed(oldFileName, newFileName);
-                }
-            }
         });
     }
 }
