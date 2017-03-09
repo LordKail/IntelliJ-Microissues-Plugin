@@ -5,7 +5,7 @@ package uk.ac.glasgow.microissues.plugin;
  * history can be confirmed.
  */
 
-public class TicketHistoryTest {
+public class TicketHistorySample {
 
     /*
     @tckt Ticket summary changed.
