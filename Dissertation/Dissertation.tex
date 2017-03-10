@@ -13,10 +13,13 @@
 \usepackage{color}
 \usepackage{pdfpages}
 
-% Used for subsubsections%
+% Used for subsubsections %
 \usepackage{titlesec}
 \setcounter{secnumdepth}{4}
 \setcounter{tocdepth}{4}
+
+% Checkmark %
+\usepackage{amssymb}
 
 \definecolor{dkgreen}{rgb}{0,0.6,0}
 \definecolor{gray}{rgb}{0.5,0.5,0.5}
@@ -44,11 +47,7 @@ Abstract here
 \chapter{Introduction}
 \pagenumbering{arabic}
 
-\section{Project Context}
-
-
-
-\section{Motivation}
+\section{Motivation \& Context}
 
 The majority of issue management systems are either client-server applications, distributed or hosted systems. Based on the research described in section \ref{sec:Research} and the already existing plugins, there is a lack of attempts of reducing context switch between using issue management systems and computer programming. 
 
@@ -58,11 +57,11 @@ The prime objective of the project is to develop a working plugin with minimal f
 
 \section{Achievements}
 
-The plugin developed conforms to the initial idea and the requirements and has undergone user evaluation in order to confirm the working of it. Survey on usability and informal opinion on how the users felt the plugin compared to the issue tracking systems they have previously used was conducted, of which the results will be described in \ref{sec:usereval}.
+The plugin developed conforms to the initial idea and the requirements and has undergone user evaluation in order to confirm its working. Survey on usability and informal opinion on how the users felt the plugin compared to the issue tracking systems they have previously used was conducted, of which the results will be described in \ref{sec:usereval}.
 
 \section{Dissertation Structure}
 
-The dissertation will follow the structure outline in the below table \ref{table:reportStructure}.
+The dissertation will follow the structure outlined in the below table \ref{table:reportStructure}.
 
 \begin{table}[H]
 \centering
@@ -71,11 +70,11 @@ The dissertation will follow the structure outline in the below table \ref{table
 \hline
 Chapter & Content \\
 \hline
-2. Background & A short description of the previous work related to the project and research done on issue management. \\
-3. Requirements & Discusses the gathering of the requirements, followed by a list of all requirements. \\
+2. Background & A short description of related plugins and research done on issue management. \\
+3. Requirements & Discusses the gathering of the requirements, followed by a list of all the requirements. \\
 4. Design & Details the design decisions taken and contains a list of final design features.\\
-5. Architecture & Describes the implementation aspects of the plugin throughout development\\
-6. Evaluation & Describes the test process and the user evaluation carried out, their results and a discussion of the results. \\
+5. Architecture & Describes the implementation aspects of the plugin throughout development.\\
+6. Evaluation & Describes the test process, user evaluation and a discussion of the results.\\
 7. Conclusion: & Discusses the outcome of the project, future work possibilities and learning outcomes.  \\
 \hline
 \end{tabular}
@@ -90,7 +89,7 @@ This chapter discusses the specifics of issue tracking systems and outlines rela
 
 \section{Issue Tracking}
 
-Issue tracking is the process of documenting and keeping track of tasks or defects that occur during development. It is considered to be a vital part of software development process and can be considered as a means of communication within the development team \cite{socialnature}.
+Issue tracking is the process of documenting and keeping track of tasks or defects that occur during development. It is considered a vital part of software development process and can be considered as a means of communication within the development team \cite{socialnature}.
 
 \subsection{Issue Tracking Systems}
 
@@ -120,7 +119,7 @@ Various plugins have been developed to ease the integration of issue management 
 \subsection{Inbuilt IntelliJ Task Management Plugin}
 
 %Might have the ability to create local tasks%
-IntelliJ IDEA is bundled with its own task management plugin and is activated by default. It allows for integration to various issue tracking systems, which gives the user the functionality to open, create and delete tasks or issues. Therefore a server that the tasks and issues are hosted on is necessary to use the inbuilt feature, which means there is no capability to create tickets locally. Additionally, tickets cannot be linked to source code in any way.
+IntelliJ IDEA is bundled with its own task management plugin and is activated by default. It allows for integration to various issue tracking systems, which gives the user the functionality to open, create and delete tasks or issues. In addition, users can create local tasks, however, they are not visible to other users and are not archived in any way. 
 
 \begin{figure}[H]
 \includegraphics[scale=0.5]{IntelliJ_Tasks}
@@ -153,11 +152,11 @@ Another IntelliJ plugin that was developed by Sergiy Dubovik and continued by Wa
 
 \subsection{Mylyn}
 
-Mylyn is the task and application lifecycle management (ALM) framework for Eclipse. It boasts a wide array of features, including being able to work on either local tasks, which do not require a shared repository, or shared repository tasks, which do. 
+Mylyn is the task and application lifecycle management (ALM) framework for Eclipse. It boasts a wide array of features, including being able to work on either local tasks, which do not require a shared repository, or shared repository tasks, which do. A particular feature of interest for this project is the ability to create certain view around certain tasks, which allows to specify the exact files that have to be worked on for the specific task. Even though this is not direct integration with source code, it does help to 
 
 \subsection{Eclipse TODO Editor Plugin}
 
-The Eclipse todo editor plugin that allows to edit todo files in Eclipse. 
+The Eclipse todo editor plugin allows to edit todo files in Eclipse, which are then displayed in a panel. This plugin deserves a mentioned due to the fact that it allows users to readily view all the tasks (todos) that they have defined in a nicely formatted tree in Eclipse itself and therefore allows them for a more focused approach to what has to be achieved. 
 
 \begin{figure}[H]
 \includegraphics[scale=0.6]{eclipse_TODO_editor}
@@ -175,7 +174,7 @@ All of the above mentioned plugins were developed with a specific purpose in min
 \item Plugins that act as standalone issue management systems themselves.
 \end{itemize}
 
-
+A summarisation of the plugin features can be viewed in the below table.
 
 \begin{center}
 \begin{table}[H]
@@ -184,16 +183,20 @@ All of the above mentioned plugins were developed with a specific purpose in min
 \backslashbox[50mm]{Plugin}{Feature}
 &\makebox{Integration with source code}&\makebox{Local issue management}&\makebox{Display of all issues}
 \\\hline
-IntelliJ Inbuilt Plugin & Yes &&\\\hline
-Tasks Navigation & No &&\\\hline
-Tasks & Yes & &\\\hline
-Mylyn & No & & \\\hline
-Eclipse TODO Editor & Yes && \\\hline
+IntelliJ Inbuilt Plugin &  & \checkmark & \checkmark \\\hline
+Tasks Navigation & \checkmark &  & \\\hline
+Tasks &  & \checkmark & \checkmark \\\hline
+Mylyn &  & \checkmark & \checkmark \\\hline
+Eclipse TODO Editor & Partial & \checkmark & \checkmark \\\hline
 \end{tabular}
 \label{table:featurematrix}
 \caption{Feature matrix of related plugins}
 \end{table}
 \end{center}
+
+From the summarisation of the features it can be observed that a lot of the plugins researched do not connect tickets to source code in almost any way. The only exception is the \textit{Tasks Navigation} plugin, however, since it only provides the ability to link to external issue management systems, it does not allow for ticket creation or modification within the IDE itself.
+
+It can also be observed that the display of issues is a prominent feature and in all cases, issues are displayed to the user as a list.
 
 \section{Research on Issue Tracking and Usage of Issue-tracking Systems}\label{sec:Research}
 
@@ -203,12 +206,9 @@ One of the interview results in the research paper "How Software Engineers Use D
 
 \section{Evaluation of Related Work and Related Research}
 
-Taking into consideration the main points which were considered when reviewing the already existing plugins (integration with source code, local issue management and display of all isues), it is clear that none of the plugins are completely standalone issue management systems which are integrated with source code. 
-From the research it is evident that using an issue management system is an important part of development process, however, the fact that it is usually widely separate from the source code is a decremental aspect. 
+% Decided to re-write %
 
 \chapter{Requirements}
-
-
 
 \section{Requirements Elicitation and Gathering}
 
@@ -347,7 +347,7 @@ The ticket information panel displays information about the ticket. Similarly to
 
 \chapter{Architecture}
 
-The development process for most of the components of the plugin has been iterative, with some features requiring a re-design due to the shortcomings in prior implementation techniques that were discovered throughout development. 
+The development process for most of the components of the plugin has been iterative, with some features requiring a redesign due to the shortcomings in prior implementation techniques that were discovered throughout development. 
 
 The architecture of the plugin will be outlined and discussed in the following sections in the natural order that the plugin operates in. 
 
@@ -400,6 +400,24 @@ The importance of having discussed both of the approaches above is that the appr
 The \textit{initComponent} and \textit{projectOpened} methods from the \textit{ProjectComponent} interface were used to initialize and register the tool window to the project as a component and using the \textit{runActivity} method from the \textit{StartupActivity} interface allowed to start the process of scanning the files for comments without an exception being thrown.
 
 \section{Tickets}
+
+A ticket is represented in the code as a C-style comment with a particular structure. A user can signify a ticket by using the \textit{@tckt} annotation, followed by the sample summary that describes the ticket. \\
+This particular tag is required if the user wishes to transform the comment into a ticket, with the rest of the tags optional. The exact tags allowed in the current implementation are as follows:
+
+\begin{itemize}
+\item \textit{@tckt} - Has to be followed by a string, signifying the summary of the ticket.  
+\item \textit{@type} - Signifies the type of the ticket. Has to be followed by any string.
+\item \textit{@priority} - Signifies the importance of the ticket. Has to be followed by an integer.
+\end{itemize}
+
+The figure \ref{fig:ticketcomment} demonstrates  how a sample comment intended to be a ticket looks like.
+
+\begin{figure}[H]
+\includegraphics[scale=0.6]{Ticket_comment}
+\centering
+\caption{An example of a ticket represented as a comment in the code.}\label{ticketcomment}
+\label{fig:ticketcomment}
+\end{figure}
 
 As tickets reside as comments in the code, a way to extract them and turn them into actual ticket instances was necessary. This was accomplished by utilising Program Structure Interface (PSI) elements, the collection of which represents an internal structure of the source code in the IntelliJ Platform. \\
 
