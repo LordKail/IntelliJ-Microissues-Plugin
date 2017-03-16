@@ -546,13 +546,169 @@ breaklines=true,
 \end{lstlisting}
 
 \chapter{Evaluation}
-
-Describe the aims of this chapter
+% Remember to reference + a lot more detail required % 
+The purpose of evaluation was to ascertain the quality of the final product and to gather feedback on the conceptual idea of the plugin and its purpose. The methods for evaluating the plugin were unit testing, for which metrics were gathered, and user evaluation, for which qualitative and quantitative data was gathered.
 
 \section{Unit Testing}
+
+% Describe what Unit Testing is 
+In order to ensure that the critical sections of the logic in the final product to be deployed worked as intended, unit testing was incorporated. The following libraries were used:
+
+\begin{itemize}
+\item JUnit - 
+\item EasyMock - 
+\item Objenesis - 
+\end{itemize}
+
+% What should discussion on Unit testing concentrate on? %
+
 \section{User evaluation}\label{sec:usereval}
 
+Initially, user evaluation was intended to be carried out in a single iteration with all the users using the exact same deployed plugin. However, due to unexpected issues in the plugin that were discovered by the first few , the evaluation had to be split into two iterations. 
+
+\subsection{Preparation for Evaluation}
+
+In order to evaluate the plugin, the following prerequisites had to be completed:
+
+\begin{enumerate}
+\item Deploy the plugin - for evaluation the plugin was built and archived as a zip file containing all the necessary dependencies and the plugin itself.
+\item Create a sample project with existing tickets - in order for the user to see and work 
+\end{enumerate}
+
+
+\subsection{General Structure of User Evaluation}
+
+In both iterations 1 and 2, the structure and the flow of the evaluation was the same:
+
+\begin{enumerate}
+\item Confirm the users' consent and reassure anonymity.
+\item Present the context of the project and general overview of the plugin.
+\item Install the plugin for the IntelliJ IDE on their computer.
+\item Present the user with the tasks to complete.
+\item Gather feedback by providing them a survey link.
+\end{enumerate}
+
+Likewise, the tasks presented to the users remained the same and are according to the following script:
+
+\begin{table}[H]
+\centering
+\def\arraystretch{1.5}
+\begin{tabular}{p{5cm}p{10cm}}
+\hline
+Task & Description\\
+\hline
+1. View a ticket's information. & The user should be able to view all the relevant information pertaining the ticket in the information panel. \\
+2. Edit an existing ticket. & The user should make changes to an existing ticket and ensure their changes are reflected in the task tree \& information panel. \\
+3. Create a new ticket. & The user should create a new ticket by example of already existing tickets and ensure their ticket is visible in the task tree with the correct details in the information panel.  \\
+4. Delete a ticket. & The user should delete the comment containing the ticket and ensure the ticket is gone from the task tree. \\
+5. Move a ticket & The user should move a ticket (most likely cut-paste the comment to a different file or part of the code and ensure the ticket is not affected in the task tree or the information panel (no duplicates or removal of the ticket should occur).\\
+6. View ticket history. & The should press to view the ticket history by right clicking the ticket in the task tree and the ticket history should \\ 
+7. Experiment freely & The user is given the freedom to experiment with the plugin in any other way they could envisage it to be used. \\
+\hline
+\end{tabular}
+\caption{Tasks for the user}
+\label{table:userevaltasks}
+\end{table}
+
+\subsection{}
+
+\subsection{Iteration 1}
+
+During the first iteration, the first version of the deployed plugin was used. A total of five users were used for the evaluation. As previously discussed, issues were discovered during the iteration which impacted some functionality of the plugin. 
+\newline
+The issues discovered were as follows:\\
+\newline
+\textbf{Issue 1} - An exception thrown when creating a comment.\\
+\newline
+As soon as the user tried to create a comment in order to create the ticket, an exception would be thrown. If the user tried to make the comment a ticket by specifying the \textit{@tckt} tag, it would not be detected by the plugin and therefore not displayed in the task tree.\\   
+\newline
+\textbf{Cause \& Solution} - The issue was caused by the part of the code that was responsible for retrieving the filename of the file that the ticket would be associated to. The initial approach was to a call a single \textit{getParent()} method on the element and assume that it would be the element representing the class (including the name, which would be extracted). However, when a ticket is added inside nested parts of the code, the parent returned turned out to not be the class file but rather other elements in the hierarchy. Therefore the solution was to continuously go up in the hierarchy until the instance of the class file would be found. 
+
+\textbf{Issue 2} - % Discuss the second issue found %
+	
+
+\subsection{Iteration 2}
+
+The rest of the evaluation (12 users) was carried out in iteration 2. Issues found in iteration 1 were rectified as per the above solutions. During this iteration, none of the previously occurred issues emerged, however, a new issue was discovered by one user during their free exploration stage. \\
+\newline
+\textbf{Issue 1} - Tickets from identical java file names (in separate locations) are only detected from one of them.\\
+\newline
+A user had discovered this by creating two separate packages and creating java files with identical names in them. \\
+\newline
+\textbf{Cause \& Solution} - The cause of the issue was the fact that since tickets were associated with the files they were in, when a re-scan of the file for tickets occurred, it would delete the previously detected tickets associated with that file from the task tree and re-add the new ones found. That meant if there were two files with the same name, only tickets from one of them would be displayed in the tree (and if one of the files was empty, if it was scanned last, none of the tickets from the first would be displayed).  Since this was an edge case and did not impact the overall working of the program, the iteration was continued with the deployed version.  
+
+\subsection{Feedback Survey \& Evaluation results}
+
+After the users had completed their tasks and free exploration of the plugin, they were provided a link to fill an optional survey in order to gather qualitative and quantitative feedback on the plugin and the concept of source code integrated issue tracking.
+
+\textbf{Which level student are you?}
+\newline
+\textbf{How easy was the plugin to use?}\\
+This question incorporated a linear scale of 1 to 5, with 1 being an indicator of an easy to use system that beginners (very little experience with the plugin) could use and 5 being an indicator of the opposite - a lot of experience and expert level knowledge of the plugin required for proper usage.   
+
+\begin{figure}[H]
+\includegraphics[scale=0.6]{How_easy}
+\centering
+\caption{Responses to how easy the plugin is to use.}
+\label{fig:howeasy}
+\end{figure}
+
+Even though the question does not provide a benchmark between how easy the plugin is to use compared to other similar plugins or systems, it does provide feedback on how quickly the users can start using it and how accessible it is. Higher values would also indicate an increased confusion in users of what they can actually do. 
+From the figure \ref{fig:howeasy} it can be seen that the highest volume of answers is in the lower spectrum. With the highest amount of answers being number 2, it indicates that the plugin required some getting used to and possibly looking at the plugin description window but was eventually easy to use with little learning curve. 
+
+\textbf{Did you encounter any issues?}
+
+This particular question was to ascertain the stability of the system and to record any unexpected issues that might have occurred during the completion. The checkbox options provided to the user were as follows:
+% Is this list fine? %
+\begin{itemize}
+\item The plugin did not work as intended.
+\item There were crashes/bugs.
+\item Plugin installation did not work.
+\item It was difficult to understand what the plugin is supposed to do.
+\item It was hard to know what functionality the plugin allows.
+\item None
+\item Other (Textual entry)
+\end{itemize}
+
+\textbf{How do you feel this compares to standard issue management systems (Trac, GitLab, Jira)?}
+
+The question featured a long textual entry box with the intention of receiving qualitative feedback on the plugin compared to the issue trackers that the users had previously used. Both user groups (level 3 and level 4 University of Glasgow computing science students) were confirmed to have experience with at least one standard issue tracker system, which was gained by them undertaking the Professional Software Development course.
+
+Most of the feedback received was positive and 15 out of 17 responses were geared towards positive aspects of the plugin with the specific areas they found to be superior compared to an issue tracker they had previously used. The feedback received can be divided into four categories: simplicity, visibility, convenience and richness.
+
+\begin{itemize}
+\item Simplicity - a substantial amount of the positive feedback received was regarding the fact that the users thought it was simpler to use than the common issue trackers. The simplicity was further reassured by the mentions of how fast a ticket could be created, meaning it was not difficult to complete the intended action.
+\item Convenience - the positive comments regarding convenience were that when creating or modifying tickets, there is no need to navigate away from the code. However, one particular user outlined that for team projects, if a ticket was written or edited, it would have to be pushed to the repository for the other team members to see, which would be an inconvenient since they would possibly have to commit unfinished code alongside the ticket.
+\item Visibility - users were keen on the idea of being able to view the tickets straight in the IDE, which allows the user to track and update progress of a ticket better. However, one possible downside outlined by a particular user was that if there were to be a lot of tickets, the tree view of the tickets could become messy and harder to manage.  
+\item Richness - the amount of features the plugin had received the most negative feedback. The users thought that the plugin missed some key features of an efficient issue management system such as being able to sort or group tickets by certain attributes (priority, type etc.) or visualising the data by the means of graphs. 
+\end{itemize}
+
+\textbf{If this plugin was available for the editor that you preferred to use, would you use it (either for your own personal projects or team projects)?}
+
+This question analyses how likely a user would be to install and use the plugin if an identical (or very similar) one was available for their IDE of choice. The question was followed by a textual entry to outline why a particular choice was taken. 
+
+\begin{figure}[H]
+\includegraphics[scale=0.6]{Would_you_use}
+\centering
+\caption{Responses to whether the users would use the plugin if it was available in the IDE of their choice.}
+\label{fig:wouldyouuse}
+\end{figure}
+
+As seen from the figure \ref{fig:wouldyouuse}, the majority of the users said would be interested in using the plugin (16 out of 17 responses). The majority of the justifications included similar comments to how they compared the plugin to standard issue management systems, noting its simplicity and the lack of need to switch context between the code and issue management. 
+
+\textbf{Which other functionality would you have liked the plugin to have?}
+
+The intention of this question was gather feedback on which features the users thought might be missing and could be implemented in the feature in order to provide a system akin to a standard issue management system but without the extra overhead of features that some of the standard issue management systems have.
+
+One of the more mentioned features that the plugin could have was related to the tags of the system. Users mentioned that it would be a good quality of life improvement if the the plugin could recommend tags when a user is writing the ticket, with one user noting that a similar feature is provided by IntelliJ IDE when writing JavaDoc tags.
+
+Another recommended improvement to the plugin was the ability to sort or filter tickets in the ticket tree by a particular attribute (priority, type etc.). 
+
+In addition, some users mentioned that the way tickets were currently displayed, there was no way to find out in which file the tickets reside unless the ticket is double clicked in the tree and they would be navigated to that file, which was deemed to be a slight inconvenience. 
+
 \chapter{Conclusion}
+
+\section{Future work}
 
 \section{Project Outcome}
 
