@@ -5,18 +5,17 @@ package uk.ac.glasgow.microissues.plugin;
  * history can be confirmed.
  */
 
-public class TicketSamples {
-
-    /*
-    @tckt Summary here.
-    @type TASK
-    @priority 5
-    */
+public class TicketHistorySample {
 
     /*
     @tckt Ticket summary changed.
     @type TASK
-    @priority 5
+    @priority 9
+    */
+
+    /* Line here.
+    @tckt Summary here.
+    @type TASK
     */
 
     /*
