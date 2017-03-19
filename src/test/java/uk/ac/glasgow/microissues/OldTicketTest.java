@@ -34,9 +34,9 @@ public class OldTicketTest extends EasyMockSupport {
 
     @Before
     public void setUp() throws Exception {
-        expect(ticket.getSummary()).andReturn("Sample summary");
-        expect(ticket.getType()).andReturn("BUG");
-        expect(ticket.getPriority()).andReturn(9);
+        expect(ticket.getSummary()).andReturn("Sample summary").anyTimes();
+        expect(ticket.getType()).andReturn("BUG").anyTimes();
+        expect(ticket.getPriority()).andReturn(9).anyTimes();
         expect(personIdent.getName()).andReturn("LordKail");
         expect(personIdent.getWhen()).andReturn(new Date("02/20/2017"));
         replay(ticket);
@@ -88,9 +88,9 @@ public class OldTicketTest extends EasyMockSupport {
         expectedPanelTextSb.append("<p>Committer: LordKail</p>");
         expectedPanelTextSb.append("<p>Commit date: Mon Feb 20 00:00:00 GMT 2017</p>");
         expectedPanelTextSb.append("<h4>This old ticket's properties: </h4>");
-        expectedPanelTextSb.append("<p>Summary: Sample summary 1 <b>[CHANGED]</b></p>");
-        expectedPanelTextSb.append("<p>Type: TASK <b>[CHANGED]</b></p>");
-        expectedPanelTextSb.append("<p>Priority: 3 <b>[CHANGED]</b></p>");
+        expectedPanelTextSb.append("<p>Summary: Sample summary 1 <b>[CHANGED] </b></p><p>Current: Sample summary</p>");
+        expectedPanelTextSb.append("<p>Type: TASK <b>[CHANGED] </b>Current: BUG</p>");
+        expectedPanelTextSb.append("<p>Priority: 3 <b>[CHANGED] </b>Current: 9</p>");
         expectedPanelTextSb.append("</html>");
 
         Assert.assertEquals(expectedPanelTextSb.toString(), returnedPanelText);
