@@ -55,7 +55,6 @@ public class PsiAndTicketHandler {
             @Override
             public boolean processFile(VirtualFile fileInProject) {
                 if(fileInProject.getFileType().getName().equals("JAVA")){
-                    // Something to do here.
                     PsiFile psiFile = PsiManager.getInstance(project).findFile(fileInProject);
                     taskTree.flushTicketsInFile(psiFile.getVirtualFile().getName());
                     scanPsiFile(psiFile, psiFile);

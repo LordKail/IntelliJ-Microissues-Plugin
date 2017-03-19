@@ -9,8 +9,8 @@ public class TicketHistorySample {
 
     /*
     @tckt Ticket summary changed.
-    @type TASK
-    @priority 9
+    @type BUG
+    @priority 5
     */
 
     /* Line here.

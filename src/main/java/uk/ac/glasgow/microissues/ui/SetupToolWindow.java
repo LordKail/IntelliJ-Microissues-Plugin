@@ -18,6 +18,11 @@ public class SetupToolWindow implements StartupActivity {
 
     private JComponent microissuesContainer;
 
+    /**
+     * Invoked after the project has fully loaded. The tool window of the plugin is retrieved and the process of
+     * scanning java files for tickets is started.
+     * @param project
+     */
     @Override
     public void runActivity(@NotNull Project project) {
 

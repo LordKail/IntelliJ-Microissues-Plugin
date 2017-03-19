@@ -15,6 +15,8 @@ public class RefreshTasks extends AnAction {
     public void actionPerformed(AnActionEvent e) {
         Project project = DataKeys.PROJECT.getData(e.getDataContext());
         ToolWindowComponent toolWindowComponent = project.getComponent(ToolWindowComponent.class);
+
+        // Reprocesses all the project files to detect tickets.
         toolWindowComponent.getPsiHandler().processProjectFiles();
     }
 }
