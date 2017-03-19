@@ -59,36 +59,39 @@ public class TaskTree {
 
         MouseListener ml = new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
-                if (SwingUtilities.isRightMouseButton(e)) {
+                if (taskTree.getSelectionPath() != null) {
                     DefaultMutableTreeNode selectedElement
                             = (DefaultMutableTreeNode) taskTree.getSelectionPath().getLastPathComponent();
-                    JPopupMenu popup = new JPopupMenu();
-                    JMenuItem viewInfo = new JMenuItem("View ticket history");
-                    viewInfo.addActionListener(new TreeMenuListener(selectedElement));
-                    popup.add(viewInfo);
-                    popup.show(taskTree, e.getX(), e.getY());
+                    if (!(selectedElement.getUserObject() instanceof String)) {
 
-                }else{
-                    if(taskTree.getSelectionPath() != null){
-                        DefaultMutableTreeNode selectedElement
-                                = (DefaultMutableTreeNode) taskTree.getSelectionPath().getLastPathComponent();
-                        Ticket selectedTicket;
-                        if(selectedElement.getUserObject() instanceof OldTicket.TicketLabel){
-                            OldTicket.TicketLabel ticketLabel = (OldTicket.TicketLabel) selectedElement.getUserObject();
-                            selectedTicket = ticketLabel.getTicket();
+                        if (SwingUtilities.isRightMouseButton(e)) {
+                            JPopupMenu popup = new JPopupMenu();
+                            JMenuItem viewInfo = new JMenuItem("View ticket history");
+                            viewInfo.addActionListener(new TreeMenuListener(selectedElement));
+                            popup.add(viewInfo);
+                            popup.show(taskTree, e.getX(), e.getY());
+
                         } else {
-                            Ticket.TicketLabel ticketLabel = (Ticket.TicketLabel) selectedElement.getUserObject();
-                            selectedTicket = ticketLabel.getTicket();
-                        }
-                        if(e.getClickCount() == 1){
-                            ticketInfoTab.setText(selectedTicket.toPanelString());
-                        } else {
-                            NavigatablePsiElement navigatable = (NavigatablePsiElement) selectedTicket.getAssociatedComment().getParent();
-                            navigatable.navigate(true);
+                                Ticket selectedTicket;
+                                if (selectedElement.getUserObject() instanceof OldTicket.TicketLabel) {
+                                    OldTicket.TicketLabel ticketLabel = (OldTicket.TicketLabel) selectedElement.getUserObject();
+                                    selectedTicket = ticketLabel.getTicket();
+                                } else {
+                                    Ticket.TicketLabel ticketLabel = (Ticket.TicketLabel) selectedElement.getUserObject();
+                                    selectedTicket = ticketLabel.getTicket();
+                                }
+
+                                if (e.getClickCount() == 1) {
+                                    ticketInfoTab.setText(selectedTicket.toPanelString());
+                                } else {
+                                    NavigatablePsiElement navigatable = (NavigatablePsiElement) selectedTicket.getAssociatedComment().getParent();
+                                    navigatable.navigate(true);
+                            }
                         }
                     }
                 }
             }
+
         };
 
         taskTree.addMouseListener(ml);

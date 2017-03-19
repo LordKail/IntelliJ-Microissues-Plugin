@@ -22,7 +22,7 @@ public class OldTicket extends Ticket {
      */
     public String toPanelString(){
 
-        String changed = "<b>[CHANGED]</b>";
+        String changed = "<b>[CHANGED] </b>";
 
         StringBuilder sb = new StringBuilder();
         sb.append("<html><h3> Ticket History </h3>");
@@ -39,7 +39,7 @@ public class OldTicket extends Ticket {
             changedProperty = false;
         }
 
-        sb.append("<p>Summary: " + summary + " " + (changedProperty ? changed : "") + "</p>");
+        sb.append("<p>Summary: " + summary + " " + (changedProperty ? changed + "</p><p>Current: " + mostRecentVersion.getSummary() : "") + "</p>");
 
         if(type != null) {
             if(!type.equals(mostRecentVersion.getType())) {
@@ -47,7 +47,7 @@ public class OldTicket extends Ticket {
             } else {
                 changedProperty = false;
             }
-        sb.append("<p>Type: " + type + " " + (changedProperty ? changed : "") + "</p>");
+        sb.append("<p>Type: " + type + " " + (changedProperty ? changed + "Current: " + mostRecentVersion.getType() : "") + "</p>");
         }
 
         if(priority != 0) {
@@ -59,7 +59,7 @@ public class OldTicket extends Ticket {
                 } else {
                     changedProperty = false;
                 }
-                sb.append("<p>Priority: " + priority + " " + (changedProperty ? changed : "") + "</p>");
+                sb.append("<p>Priority: " + priority + " " + (changedProperty ? changed + "Current: " + mostRecentVersion.getPriority() : "") + "</p>");
             }
         }
 
@@ -98,10 +98,18 @@ public class OldTicket extends Ticket {
                     difference = "Change: Summary";
                 }
             }
+
             if(type != null) {
                 if (!getType().equals(mostRecentVersion.getType())) {
                     numOfDifferences += 1;
                     difference = "Change: Type";
+                }
+            }
+
+            if(priority != 0){
+                if(priority != mostRecentVersion.getPriority()){
+                    numOfDifferences += 1;
+                    difference = "Change: Priority";
                 }
             }
             return (numOfDifferences == 1 ? difference : "Multiple Changes") + ", Committed on: " + commitInfo.getWhen();

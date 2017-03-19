@@ -10,6 +10,9 @@ import uk.ac.glasgow.microissues.plugin.PsiAndTicketHandler;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * The class for initiating setup of the toolwindow - starting the process of scanning for tickets in the project.
+ */
 
 public class SetupToolWindow implements StartupActivity {
 

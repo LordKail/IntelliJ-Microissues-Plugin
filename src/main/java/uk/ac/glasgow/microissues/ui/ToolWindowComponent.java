@@ -13,7 +13,7 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
- * Created by 2090140l on 22/02/17.
+ * The class for setting the tool window containing the tickets and ticket information as a project component.
  */
 public class ToolWindowComponent implements ProjectComponent {
 

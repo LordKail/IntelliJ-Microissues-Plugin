@@ -9,12 +9,10 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.powermock.api.easymock.PowerMock;
 import uk.ac.glasgow.microissues.plugin.OldTicket;
 import uk.ac.glasgow.microissues.plugin.Ticket;
 import uk.ac.glasgow.microissues.plugin.TicketHistory;
 
-import javax.swing.*;
 import java.util.LinkedHashMap;
 
 import static org.easymock.EasyMock.expect;
@@ -48,7 +46,6 @@ public class TicketHistoryTest extends EasyMockSupport {
         expect(ticket.getAssociatedComment()).andReturn(psiComment);
         replay(ticket);
         expect(psiComment.getText()).andReturn("/*\n@tckt Sample Summary\n*/");
-        PowerMock.mockStatic(JFileChooser.class);
     }
 
     @Test

@@ -29,7 +29,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * A class used for storing the data of ticket histories.
+ * The class used for storing the data of ticket histories and containing the method for accessing git history.
  */
 
 public class TicketHistory {
@@ -43,13 +43,18 @@ public class TicketHistory {
         this.mainTicket = ticket;
     }
 
+    /**
+     * The method for retrieving ticket history. Accesses Git repository and the commits for the project.
+     * Finds the diffs which include the corresponding file of the main ticket and tries to find tickets similar to the
+     * ones in the current file version.
+     * @return olderVersionTickets - a hashmap of older ticket versions.
+     */
     public LinkedHashMap<OldTicket, PersonIdent> retrieveTicketHistory() {
         String ticketText = mainTicket.getAssociatedComment().getText();
         if(olderVersionTickets != null){
             return olderVersionTickets;
         }
         else {
-            System.out.println("OlderVersions is null, creating a list.");
             olderVersionTickets = new LinkedHashMap<>();
 
             JOptionPane.showMessageDialog(null, "Please select the root folder of your application where the .git folder is inside.");
@@ -65,100 +70,97 @@ public class TicketHistory {
 
             File file = fc.getSelectedFile();
             if (returnVal == JFileChooser.APPROVE_OPTION) {
-                //This is where a real application would open the file.
-                System.out.println("Opening: " + file.getName() + ".");
-                System.out.println(file.getAbsolutePath());
-            }
 
-            File gitFolder = new File(file.getAbsolutePath() + "/.git");
-            FileRepository repo = null;
-            try {
-                repo = new FileRepository(gitFolder);
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            }
-            Git git = new Git(repo);
-            System.out.println("Commits of repo: ");
-            System.out.println("-------------------------------------");
+                // Get the git folder.
+                File gitFolder = new File(file.getAbsolutePath() + "/.git");
+                FileRepository repo = null;
+                try {
+                    repo = new FileRepository(gitFolder);
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+                Git git = new Git(repo);
 
-            try {
-                Iterable<RevCommit> commits = git.log().all().call();
-                AbstractTreeIterator oldTreeParser = null;
-                AbstractTreeIterator newTreeParser = null;
-                for (RevCommit commit : commits) {
-                    System.out.println("Printing info for commit: " + commit.getName());
-                    if ((oldTreeParser == null) && (newTreeParser == null)) {
-                        System.out.println("Created tree for old tree");
-                        oldTreeParser = prepareTree(repo, commit);
-                    }
+                // Iterate through the commits of the repo.
+                try {
+                    Iterable<RevCommit> commits = git.log().all().call();
+                    AbstractTreeIterator oldTreeParser = null;
+                    AbstractTreeIterator newTreeParser = null;
 
-                    else {
-                        newTreeParser = prepareTree(repo, commit);
-                        List<DiffEntry> diff = git.diff().
-                                setOldTree(oldTreeParser).
-                                setNewTree(newTreeParser).
-                                call();
-                        System.out.println("Affected files: ");
-                        for (DiffEntry entry : diff) {
-                            Path p = Paths.get(entry.getNewPath());
-                            if(p.getFileName().toString().endsWith(".java")) {
-                                if (p.getFileName().toString().equals(mainTicket.getAssociatedFile())) {
-                                    System.out.println("File name of diff: " + p.getFileName());
-                                    System.out.println("Associated file in ticket: " + mainTicket.getAssociatedFile());
-                                    System.out.println(entry.getNewId());
-                                    ObjectLoader loader = repo.open(entry.getNewId().toObjectId());
-                                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                                    loader.copyTo(baos);
-                                    String oldFile = new String(baos.toByteArray(), Charsets.UTF_8);
+                    for (RevCommit commit : commits) {
+                        if ((oldTreeParser == null) && (newTreeParser == null)) {
+                            oldTreeParser = prepareTree(repo, commit);
+                        } else {
+                            newTreeParser = prepareTree(repo, commit);
+                            List<DiffEntry> diff = git.diff().
+                                    setOldTree(oldTreeParser).
+                                    setNewTree(newTreeParser).
+                                    call();
 
-                                    // Pattern for detecting comments
-                                    String pattern = "//.*|(\"(?:\\\\[^\"]|\\\\\"|.)*?\")|(?s)/\\*.*?\\*/";
-                                    Pattern r = Pattern.compile(pattern);
-                                    Matcher m = r.matcher(oldFile);
+                            // Goes through each diff
+                            for (DiffEntry entry : diff) {
+                                Path p = Paths.get(entry.getNewPath());
+                                // Checks if a file of the corresponding diff is a java file.
+                                if (p.getFileName().toString().endsWith(".java")) {
+                                    if (p.getFileName().toString().equals(mainTicket.getAssociatedFile())) {
+                                        // Checks if the file in diff is the same as te main ticket's file.
+                                        ObjectLoader loader = repo.open(entry.getNewId().toObjectId());
+                                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                                        loader.copyTo(baos);
+                                        String oldFile = new String(baos.toByteArray(), Charsets.UTF_8);
 
-                                    while (m.find()) {
-                                        if (m.group(0).contains("@tckt")) {
-                                            System.out.println("FOUND TICKET;");
-                                            int ratio = FuzzyMatch.getRatio(m.group(0),
-                                                    ticketText, false);
-                                            System.out.println("FUZZY MATCH RATIO: " + ratio);
-                                            System.out.println("Between: \n" + ticketText);
-                                            System.out.println(m.group(0));
-                                            System.out.println("Ratio: " + ratio);
-                                            if (ratio > 70) {
-                                                if (ratio != 100) {
-                                                    OldTicket olderVersion = new OldTicket(mainTicket, commit.getCommitterIdent());
-                                                    olderVersion.buildIssue(m.group(0));
-                                                    Ticket comparisonTicket = new Ticket();
-                                                    comparisonTicket.buildIssue(ticketText);
-                                                    System.out.println("Comparing summaries:");
-                                                    System.out.println(olderVersion.getSummary());
-                                                    System.out.println(comparisonTicket.getSummary());
-                                                    if(FuzzyMatch.getRatio(olderVersion.getSummary(), comparisonTicket.getSummary(), false) > 70) {
-                                                        olderVersionTickets.put(olderVersion, commit.getCommitterIdent());
-                                                        ticketText = m.group(0);
+                                        // Pattern for detecting comments
+                                        String pattern = "//.*|(\"(?:\\\\[^\"]|\\\\\"|.)*?\")|(?s)/\\*.*?\\*/";
+                                        Pattern r = Pattern.compile(pattern);
+                                        Matcher m = r.matcher(oldFile);
+
+                                        while (m.find()) {
+                                            if (m.group(0).contains("@tckt")) {
+                                                // Finds the ratio between the main ticket's text and the diff ticket
+                                                int ratio = FuzzyMatch.getRatio(m.group(0),
+                                                        ticketText, false);
+
+                                                // Arbitrary ratio to consider one ticket similar enough to another one.
+                                                if (ratio > 70) {
+                                                    if (ratio != 100) {
+                                                        OldTicket olderVersion = new OldTicket(mainTicket, commit.getCommitterIdent());
+                                                        olderVersion.buildIssue(m.group(0));
+                                                        Ticket comparisonTicket = new Ticket();
+                                                        comparisonTicket.buildIssue(ticketText);
+
+                                                        // Additional check to check how similar the summaries are.
+                                                        if (FuzzyMatch.getRatio(olderVersion.getSummary(), comparisonTicket.getSummary(), false) > 70) {
+                                                            olderVersionTickets.put(olderVersion, commit.getCommitterIdent());
+                                                            ticketText = m.group(0);
+                                                        }
                                                     }
                                                 }
                                             }
                                         }
-                                        System.out.println("FOUND COMMENT: " + m.group(0));
-                                    }
 
+                                    }
                                 }
                             }
+                            oldTreeParser = newTreeParser;
                         }
-                        oldTreeParser = newTreeParser;
                     }
+                } catch (GitAPIException e1) {
+                    e1.printStackTrace();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
                 }
-            } catch (GitAPIException e1) {
-                e1.printStackTrace();
-            } catch (IOException e1) {
-                e1.printStackTrace();
             }
+
             return olderVersionTickets;
         }
     }
 
+    /**
+     *
+     * @param repo - the Git repository instance.
+     * @param commit - The corresponding commit of a project.
+     * @return AbstractTreeIterator - the tree iterator to be used for iterating through the diffs of a particular commit.
+     */
     private AbstractTreeIterator prepareTree(FileRepository repo, RevCommit commit) {
         try (RevWalk walk = new RevWalk(repo)) {
             RevTree tree = walk.parseTree(commit.getTree().getId());
