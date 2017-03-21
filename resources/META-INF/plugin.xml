@@ -10,8 +10,7 @@
     ]]></description>
 
   <change-notes><![CDATA[
-      Add change notes here.<br>
-      <em>most HTML tags may be used</em>
+      Version 1.0 Deployed<br>
     ]]>
   </change-notes>
 
@@ -31,7 +30,6 @@
   </project-components>
 
   <extensions defaultExtensionNs="com.intellij">
-    <!-- Add your extensions here -->
     <postStartupActivity implementation="uk.ac.glasgow.microissues.ui.SetupToolWindow"></postStartupActivity>
   </extensions>
 

@@ -30,9 +30,7 @@ public class TreeMenuListener implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         // Was used for displaying information in the info window. Currently a proof of concept and might be removed.
-        System.out.println("SELECTED:" + e.getActionCommand());
         Ticket selectedTicket = ((Ticket.TicketLabel) selectedElement.getUserObject()).getTicket();
-        System.out.println("Selected Ticket: " + selectedElement.getUserObject().toString());
         TicketHistory history = selectedTicket.getTicketHistory();
         if(history == null){
             history = new TicketHistory(selectedTicket);

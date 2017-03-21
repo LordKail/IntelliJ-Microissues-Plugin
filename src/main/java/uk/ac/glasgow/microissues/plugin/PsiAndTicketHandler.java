@@ -75,8 +75,6 @@ public class PsiAndTicketHandler {
      */
     public void elementAddedOrRemoved(PsiTreeChangeEvent event, PsiElement elementToCheck){
         if(elementToCheck instanceof PsiComment) {
-            System.out.println(elementToCheck.getText());
-
             String commentText = elementToCheck.getText();
             if (commentText.startsWith("/*") && commentText.endsWith("*/")) {
                 if (commentText.contains("@tckt")) {
